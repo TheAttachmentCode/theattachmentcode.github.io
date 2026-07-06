@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Attachment Code — The Pattern Mirror</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1E1E20;
+  --card:#272729;
+  --card2:#303032;
+  --rose:#C49080;
+  --rose-lt:#D4A898;
+  --rose-dk:#8C5C50;
+  --cream:#D8CEC6;
+  --cream-dim:rgba(216,206,198,0.78);
+  --grey:#8A8078;
+  --ph:#6E6560;
+  --border:#3A3A3C;
+  --metal:linear-gradient(135deg,#8C5C50 0%,#D4A898 35%,#D4A898 55%,#8C5C50 100%);
+  --font-d:'Cormorant Garamond',Georgia,serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --r:8px;--r-lg:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#1E1E20;color:#D8CEC6;min-height:100vh;font-size:14px;line-height:1.6}
+.brand,.section-heading,.q-text,.teaching p,.ai-output p,.hero-sub,.reflect-q p,.confirm-card p,.entry-text p{font-family:'Cormorant Garamond',Georgia,serif!important}
+.tab-btn,.btn,.section-label,.q-number,.q-sub,.privacy-badge,.brand-sup,.tool-name,.pattern-tag,.entry-date,.entry-sub,.saved-msg,.voice-textarea{font-family:'DM Sans',system-ui,sans-serif!important}
+.wrap{max-width:860px;margin:0 auto;padding-bottom:6rem}
+
+/* Hero */
+.hero{text-align:center;padding:2.5rem 1.5rem 2rem;border-bottom:1px solid var(--border)}
+.divider{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:.85rem 0}
+.divider-line{width:60px;height:1px;background:var(--metal);opacity:.4}
+.divider-diamond{width:6px;height:6px;background:var(--rose);transform:rotate(45deg)}
+.brand-sup{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.4rem}
+.brand{font-family:var(--font-d);font-size:2rem;font-weight:300;background:var(--metal);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:.3rem}
+.tool-name{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--grey);margin-bottom:.6rem}
+.hero-sub{font-size:13px;color:var(--grey);max-width:520px;margin:0 auto;line-height:1.8;font-family:var(--font-d);font-style:italic}
+
+/* Progress */
+.tab-progress{display:flex;gap:0;height:3px;background:var(--border);position:sticky;top:0;z-index:100}
+.tab-seg{flex:1;height:100%;background:var(--border);transition:background .5s}
+.tab-seg.done{background:var(--rose-dk)}
+.tab-seg.active{background:var(--metal)}
+
+/* Tabs */
+.tabs-row{display:flex;gap:6px;margin-bottom:1.5rem;background:var(--card);border-radius:10px;padding:6px;border:1px solid var(--border);position:sticky;top:3px;z-index:99;overflow-x:auto}
+.tabs-row::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;background:transparent;border:none;cursor:pointer;padding:8px 6px;border-radius:6px;transition:all .2s;font-family:var(--font-b);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;color:var(--grey);white-space:nowrap;opacity:.45}
+.tab-btn:hover{color:var(--cream);background:rgba(196,144,128,.08);opacity:1}
+.tab-btn.active{background:var(--card2);color:var(--rose-lt);box-shadow:0 1px 4px rgba(0,0,0,.3);opacity:1}
+.tab-btn.completed{opacity:1}
+.tab-btn.completed::after{content:'✓';margin-left:5px;font-size:9px;color:var(--rose)}
+.tab-content{display:none;padding:2.5rem 1.5rem;animation:fadeIn .35s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.card2{background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.section-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);font-weight:500;display:block;margin-bottom:.75rem}
+
+/* Teaching text */
+.teaching{background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--rose);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.teaching p{font-family:var(--font-d);font-size:1.05rem;font-style:italic;color:var(--cream-dim);line-height:1.85}
+
+/* Q blocks */
+.q-block{margin-bottom:2rem}
+.q-number{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dk);font-weight:500;margin-bottom:.35rem;display:block}
+.q-text{font-family:var(--font-d);font-size:1.2rem;font-weight:400;color:var(--cream-dim);line-height:1.6;margin-bottom:.3rem}
+.q-sub{font-size:12px;color:var(--grey);font-style:italic;margin-bottom:.9rem;display:block}
+
+/* Textarea / voice */
+.voice-wrap{position:relative;margin-bottom:1rem}
+.voice-textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);color:var(--cream);font-family:var(--font-b);font-size:13px;padding:.75rem 3rem .75rem .9rem;min-height:110px;resize:vertical;outline:none;line-height:1.7;transition:border-color .2s}
+.voice-textarea:focus{border-color:var(--rose)}
+.voice-textarea::placeholder{color:var(--ph)}
+.mic-btn{position:absolute;top:.65rem;right:.65rem;background:transparent;border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;opacity:.5}
+.mic-btn:hover{opacity:1}
+.mic-btn.listening{opacity:1;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.mic-svg{width:16px;height:16px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:var(--r);font-family:var(--font-b);font-size:12px;letter-spacing:1px;font-weight:500;text-transform:uppercase;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:transparent;color:var(--cream-dim)}
+.btn:hover{border-color:var(--rose);color:var(--rose-lt)}
+.btn-rose{background:var(--metal);border:none;color:#1E1E20;font-weight:600}
+.btn-rose:hover{opacity:.88;color:#1E1E20}
+.btn-group{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
+
+/* AI output */
+.ai-loading{text-align:center;padding:2.5rem;color:var(--grey)}
+.ai-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin:0 3px;animation:dot-b .9s infinite}
+.ai-dot:nth-child(2){animation-delay:.2s}
+.ai-dot:nth-child(3){animation-delay:.4s}
+@keyframes dot-b{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ai-output{font-family:var(--font-d);font-size:1.05rem;font-weight:300;color:var(--cream-dim);line-height:1.9}
+.ai-output h3{font-family:var(--font-b);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-weight:500;margin:1.5rem 0 .5rem}
+.ai-output p{margin-bottom:1rem}
+.ai-output p:last-child{margin-bottom:0}
+
+/* Confirm card */
+.confirm-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-top:1.5rem;display:none}
+.confirm-card p{font-family:var(--font-d);font-size:1.05rem;font-style:italic;color:var(--cream-dim);line-height:1.8;margin-bottom:1rem}
+.confirm-btns{display:flex;gap:.75rem;flex-wrap:wrap}
+
+/* Correction field */
+.correction-wrap{margin-top:1rem;display:none}
+.correction-wrap label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);font-weight:500;display:block;margin-bottom:.5rem}
+
+/* Reflection questions */
+.reflect-qs{margin-top:2rem}
+.reflect-q{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-bottom:.75rem}
+.reflect-q p{font-family:var(--font-d);font-size:1.05rem;font-style:italic;color:var(--cream-dim);line-height:1.8}
+
+/* Action bar */
+.action-bar{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.saved-msg{font-size:11px;color:var(--rose);align-self:center;opacity:0;transition:opacity .3s}
+.saved-msg.show{opacity:1}
+
+/* Past entries */
+.entry-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:.75rem;overflow:hidden}
+.entry-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer}
+.entry-header:hover{background:rgba(196,144,128,.04)}
+.entry-date{font-size:12px;letter-spacing:1px;color:var(--rose);font-family:var(--font-b);font-weight:500}
+.entry-sub{font-size:11px;color:var(--grey);margin-top:.2rem}
+.entry-body{display:none;padding:0 1.25rem 1.25rem;border-top:1px solid var(--border)}
+.entry-body.open{display:block}
+.entry-section{margin-top:1rem}
+.entry-section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.5rem;display:block}
+.entry-text{font-family:var(--font-d);font-size:.95rem;color:var(--cream-dim);line-height:1.8}
+.entry-text p{margin-bottom:.75rem}
+.entry-actions{display:flex;gap:.5rem;align-items:center}
+.entry-del{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--grey);background:transparent;border:1px solid var(--border);border-radius:var(--r);padding:.3rem .7rem;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.entry-del:hover{border-color:#B87070;color:#E07070}
+
+/* Privacy badge */
+.privacy-badge{display:inline-flex;align-items:center;gap:.4rem;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:.35rem .75rem;border:1px solid var(--border);border-radius:20px;margin-bottom:1rem}
+.privacy-dot{width:6px;height:6px;border-radius:50%;background:var(--rose-dk)}
+
+/* Section heading */
+.section-heading{font-family:var(--font-d);font-size:1.5rem;font-weight:300;background:var(--metal);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+
+/* Pattern tags */
+.pattern-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+.pattern-tag{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--rose-lt);background:rgba(140,92,80,.15);border:1px solid var(--rose-dk);border-radius:20px;padding:.3rem .75rem;font-family:var(--font-b)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:3rem 1.5rem;color:var(--grey)}
+.empty-state p{font-family:var(--font-d);font-size:1.1rem;font-style:italic}
+
+/* Responsive */
+@media(max-width:600px){
+  .brand{font-size:1.5rem}
+  .tab-btn{font-size:9px;padding:7px 5px}
+  .tab-content{padding:1.75rem 1rem}
+  .btn-group{flex-direction:column}
+  .btn{justify-content:center}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Hero -->
+<header class="hero">
+  <p class="brand-sup">The Attachment Code</p>
+  <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+  <h1 class="brand">The Pattern Mirror</h1>
+  <p class="tool-name">Life Pattern Recognition</p>
+  <p class="hero-sub">This isn't about one relationship or one person. It's about the patterns that have followed you across your whole life — and where they first began.</p>
+</header>
+
+<!-- Progress bar -->
+<div class="tab-progress">
+  <div class="tab-seg active" id="seg-0"></div>
+  <div class="tab-seg" id="seg-1"></div>
+  <div class="tab-seg" id="seg-2"></div>
+  <div class="tab-seg" id="seg-3"></div>
+  <div class="tab-seg" id="seg-4"></div>
+  <div class="tab-seg" id="seg-5"></div>
+  <div class="tab-seg" id="seg-6"></div>
+</div>
+
+<!-- Tab nav -->
+<div class="tabs-row">
+  <button class="tab-btn active" onclick="goTab(0,this)">Start Here</button>
+  <button class="tab-btn" onclick="goTab(1,this)">Early World</button>
+  <button class="tab-btn" onclick="goTab(2,this)">Growing Up</button>
+  <button class="tab-btn" onclick="goTab(3,this)">Adult Life</button>
+  <button class="tab-btn" onclick="goTab(4,this)">Life Today</button>
+  <button class="tab-btn" onclick="goTab(5,this)">The Mirror</button>
+  <button class="tab-btn" onclick="goTab(6,this)">Past Entries</button>
+</div>
+
+<!-- TAB 0: START HERE -->
+<div class="tab-content active" id="tab-0">
+  <div class="teaching">
+    <p>Most people trace their relationship problems back to the last person who hurt them. But patterns don't start there. They start much earlier — in the first place you learned what love felt like, whether you were safe, and what you had to do to survive.</p>
+  </div>
+
+  <div class="card">
+    <span class="section-label">What this is</span>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px;margin-bottom:1rem">The Pattern Mirror gently walks you through your life — childhood, adolescence, adult relationships, and where you are now. At the end of each section, it reflects back what you've shared so you can see it clearly. Then it pulls everything together to show you the patterns that have been running beneath the surface.</p>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px;margin-bottom:1rem">This isn't about blame — not of others, and not of yourself. It's about recognition. Because you can't change a pattern you can't see.</p>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px">There are no right or wrong answers. The more honest you are, the more useful this becomes. Take your time. Speak your answers out loud if that feels easier — there's a microphone on every question.</p>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--rose-dk)">
+    <div class="privacy-badge"><div class="privacy-dot"></div>Private by Design</div>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px;margin-bottom:.75rem">Everything you share here stays on this device. Nothing is stored anywhere else. No one else will see what you write. This space is entirely yours.</p>
+    <p style="color:var(--grey);line-height:1.8;font-size:12px">Your saved entries are stored on the device and browser you use right now. If you come back on the same device, your history will be here. If you use a different device or browser, it will start fresh there. To keep all your entries in one place, try to use the same device each time.</p>
+  </div>
+
+  <div class="card">
+    <span class="section-label">Before you begin</span>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px;margin-bottom:1rem">Find somewhere quiet if you can. This isn't something to rush through. Some of what comes up might surprise you. Some of it might be uncomfortable. That's okay — that's usually where the important things are.</p>
+    <p style="color:var(--cream-dim);line-height:1.8;font-size:13px">If at any point something feels too heavy to sit with alone, please reach out to someone you trust or a professional who can support you properly. This tool can help you see patterns — it isn't a substitute for real human support.</p>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="goTab(1,document.querySelectorAll('.tab-btn')[1]);markDone(0)">Begin &rarr;</button>
+  </div>
+</div>
+
+<!-- TAB 1: EARLY WORLD -->
+<div class="tab-content" id="tab-1">
+  <h2 class="section-heading">Part One: Your Early World</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Childhood — the emotional environment where your patterns first began to form.</p>
+
+  <div class="teaching">
+    <p>This isn't about cataloguing what went wrong. It's about understanding the world you grew up in — what it felt like to be you as a child, and what you learned about love, safety, and your own worth from the people around you.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 01</span>
+    <p class="q-text">Think about the home you grew up in. What was the emotional atmosphere like?</p>
+    <span class="q-sub">Was it warm or cold? Chaotic or controlled? Predictable or uncertain? What did it feel like to walk through the front door?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p1-q1" placeholder="Take your time. You can speak your answer if you prefer — tap the microphone."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p1-q1',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 02</span>
+    <p class="q-text">How did the key people in your childhood make you feel about yourself?</p>
+    <span class="q-sub">Think about your parents, caregivers, siblings. Did you feel seen? Protected? Like a burden? Like you had to earn your place? Like you were loved no matter what?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p1-q2" placeholder="Think about specific people — what you remember feeling around them."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p1-q2',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 03</span>
+    <p class="q-text">Was there a time in your childhood when something shifted — when things changed and you had to adapt?</p>
+    <span class="q-sub">A loss, a separation, a family change, something that meant the world felt different after it than before. You don't have to go into detail — just describe what changed and how it felt.</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p1-q3" placeholder="Even small shifts can be significant. Trust what comes to mind."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p1-q3',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 04</span>
+    <p class="q-text">What did you learn about expressing how you felt as a child?</p>
+    <span class="q-sub">Were emotions welcomed or dismissed? Was it safe to cry, to be angry, to need something? Or did you learn to hide what you felt?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p1-q4" placeholder="Think about what happened when you showed emotions — or when you stopped showing them."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p1-q4',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 05</span>
+    <p class="q-text">Is there a memory from childhood that still stays with you — one that still carries some weight when you think of it?</p>
+    <span class="q-sub">You don't have to share the full detail. Just describe what it was and why you think it still matters to you.</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p1-q5" placeholder="There's no pressure to go deep — just share what feels right."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p1-q5',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="generateSectionReflection(1)">See Your Reflection &rarr;</button>
+  </div>
+
+  <div id="p1-reflection-wrap" style="display:none;margin-top:2rem">
+    <span class="section-label">Your Early World — Reflected Back</span>
+    <div class="card2">
+      <div id="p1-reflection-content" class="ai-output"></div>
+    </div>
+
+    <div class="confirm-card" id="p1-confirm">
+      <p>Does this feel like a fair picture of your early world?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-rose" onclick="confirmSection(1)">Yes, that's right &rarr;</button>
+        <button class="btn" onclick="showCorrection(1)">I'd like to add something</button>
+      </div>
+      <div class="correction-wrap" id="p1-correction">
+        <label>What would you like to add or correct?</label>
+        <div class="voice-wrap">
+          <textarea class="voice-textarea" id="p1-correction-text" placeholder="Add anything that felt missing or not quite right." style="min-height:80px"></textarea>
+          <button class="mic-btn" onclick="toggleMic('p1-correction-text',this)" title="Speak your answer">
+            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-rose" onclick="confirmSection(1)" style="margin-top:.5rem">Save and continue &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: GROWING UP -->
+<div class="tab-content" id="tab-2">
+  <h2 class="section-heading">Part Two: Growing Up</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Adolescence — where the protective strategies you'd need for life began to form.</p>
+
+  <div class="teaching">
+    <p>Adolescence is where the patterns from childhood meet the wider world. How you learned to belong, to trust, to protect yourself — and the first times you felt the sting of rejection or the weight of being different.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 01</span>
+    <p class="q-text">How did you fit in — or not fit in — during your school years?</p>
+    <span class="q-sub">Did you belong to a group? Were you on the outside looking in? Did you change who you were to be accepted?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p2-q1" placeholder="Think about what it felt like to walk into school — who you were there."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p2-q1',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 02</span>
+    <p class="q-text">What were your friendships like growing up? Who did you let close — and who did you keep at a distance?</p>
+    <span class="q-sub">Did you find it easy to trust people? Did friendships feel safe? Were there people who let you down?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p2-q2" placeholder="Think about the friendships that mattered — and the ones that hurt."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p2-q2',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 03</span>
+    <p class="q-text">What was your first real experience of rejection — and how did you handle it?</p>
+    <span class="q-sub">This could be social rejection, romantic rejection, being excluded, or feeling invisible. What did you do with that feeling?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p2-q3" placeholder="Rejection leaves a mark. What was yours, and what did you learn from it?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p2-q3',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 04</span>
+    <p class="q-text">How did you see yourself as a teenager? What story were you telling about who you were?</p>
+    <span class="q-sub">Confident or invisible? Too much or not enough? The one who held it all together, or the one who felt like they were always on the outside?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p2-q4" placeholder="What was the version of you that showed up in those years?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p2-q4',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 05</span>
+    <p class="q-text">Looking back, what strategies did you develop to feel safe or accepted during those years?</p>
+    <span class="q-sub">Did you make yourself useful? Invisible? Funny? Tough? Did you people-please, withdraw, or perform? What worked — even if only for a while?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p2-q5" placeholder="These weren't weaknesses — they were survival strategies. What were yours?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p2-q5',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="generateSectionReflection(2)">See Your Reflection &rarr;</button>
+  </div>
+
+  <div id="p2-reflection-wrap" style="display:none;margin-top:2rem">
+    <span class="section-label">Growing Up — Reflected Back</span>
+    <div class="card2">
+      <div id="p2-reflection-content" class="ai-output"></div>
+    </div>
+    <div class="confirm-card" id="p2-confirm">
+      <p>Does this feel like a fair picture of who you were becoming?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-rose" onclick="confirmSection(2)">Yes, that's right &rarr;</button>
+        <button class="btn" onclick="showCorrection(2)">I'd like to add something</button>
+      </div>
+      <div class="correction-wrap" id="p2-correction">
+        <label>What would you like to add or correct?</label>
+        <div class="voice-wrap">
+          <textarea class="voice-textarea" id="p2-correction-text" placeholder="Add anything that felt missing or not quite right." style="min-height:80px"></textarea>
+          <button class="mic-btn" onclick="toggleMic('p2-correction-text',this)" title="Speak your answer">
+            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-rose" onclick="confirmSection(2)" style="margin-top:.5rem">Save and continue &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: ADULT LIFE -->
+<div class="tab-content" id="tab-3">
+  <h2 class="section-heading">Part Three: Adult Relationships</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Not one relationship — all of them. What keeps showing up across the whole picture.</p>
+
+  <div class="teaching">
+    <p>The goal here isn't to analyse one person or one relationship. It's to step back and look at the through-line. What keeps repeating? What themes show up in your romantic relationships, your friendships, your family, your work? The pattern is rarely about one person — it tends to follow you everywhere.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 01</span>
+    <p class="q-text">Looking across your romantic relationships, what themes keep coming back?</p>
+    <span class="q-sub">Not the details of each one — the patterns beneath them. Do the same things tend to go wrong? Do you tend to attract a similar type of person? Does the end tend to feel the same even when the person is different?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p3-q1" placeholder="Try to look at all of them at once — not one. What do you notice?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p3-q1',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 02</span>
+    <p class="q-text">How do you tend to handle conflict — and does that pattern show up in more than one area of your life?</p>
+    <span class="q-sub">Do you go quiet? Fight hard? Try to smooth it over? Leave before it gets worse? Does the same thing happen in your family relationships or at work?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p3-q2" placeholder="Think about conflict in relationships, family, friendships, work — is there a pattern?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p3-q2',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 03</span>
+    <p class="q-text">How do you relate to intimacy and closeness? What happens when someone gets really close to you?</p>
+    <span class="q-sub">Do you welcome it? Pull back? Feel the need to test it? Worry it won't last? Find it hard to believe you deserve it?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p3-q3" placeholder="What does closeness feel like for you — exciting, unsafe, both?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p3-q3',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 04</span>
+    <p class="q-text">What role do you tend to play in your relationships — and does that role feel chosen or just... what happens?</p>
+    <span class="q-sub">The caretaker? The one who holds it together? The one who needs more than others can give? The one who gives more than is ever given back? The peacekeeper?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p3-q4" placeholder="Think about who you tend to become in relationships — romantic, family, friendships."></textarea>
+      <button class="mic-btn" onclick="toggleMic('p3-q4',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 05</span>
+    <p class="q-text">Is there a loss — or several — that you haven't fully made peace with yet?</p>
+    <span class="q-sub">Not just relationship endings. Any loss — of a person, a version of yourself, a future you expected. Does it still affect how you show up in relationships today?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p3-q5" placeholder="What are you still carrying that hasn't quite been put down?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p3-q5',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="generateSectionReflection(3)">See Your Reflection &rarr;</button>
+  </div>
+
+  <div id="p3-reflection-wrap" style="display:none;margin-top:2rem">
+    <span class="section-label">Adult Relationships — Reflected Back</span>
+    <div class="card2">
+      <div id="p3-reflection-content" class="ai-output"></div>
+    </div>
+    <div class="confirm-card" id="p3-confirm">
+      <p>Does this feel like a fair picture of the patterns in your adult life?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-rose" onclick="confirmSection(3)">Yes, that's right &rarr;</button>
+        <button class="btn" onclick="showCorrection(3)">I'd like to add something</button>
+      </div>
+      <div class="correction-wrap" id="p3-correction">
+        <label>What would you like to add or correct?</label>
+        <div class="voice-wrap">
+          <textarea class="voice-textarea" id="p3-correction-text" placeholder="Add anything that felt missing or not quite right." style="min-height:80px"></textarea>
+          <button class="mic-btn" onclick="toggleMic('p3-correction-text',this)" title="Speak your answer">
+            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-rose" onclick="confirmSection(3)" style="margin-top:.5rem">Save and continue &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: LIFE TODAY -->
+<div class="tab-content" id="tab-4">
+  <h2 class="section-heading">Part Four: Your Life Today</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Where those old patterns are still showing up right now.</p>
+
+  <div class="teaching">
+    <p>The patterns formed decades ago don't stay in the past. They show up in your present — in the situations that affect you most, the reactions that feel bigger than the moment, the things you keep doing even when you wish you wouldn't.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 01</span>
+    <p class="q-text">What kinds of situations affect you most strongly right now?</p>
+    <span class="q-sub">What triggers a strong emotional response in you — even when part of you knows the reaction might be bigger than the situation deserves?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p4-q1" placeholder="What sets you off — in relationships, in daily life, in your own head?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p4-q1',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 02</span>
+    <p class="q-text">What makes you feel safest? And what makes you want to withdraw or shut down?</p>
+    <span class="q-sub">Think about the conditions under which you feel most like yourself — and the conditions that make you want to disappear, pull back, or put your walls up.</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p4-q2" placeholder="What opens you up — and what closes you down?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p4-q2',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 03</span>
+    <p class="q-text">What emotional reactions feel like they happen on autopilot — before you've even had a chance to think?</p>
+    <span class="q-sub">The reaction that arrives before the thought. The feeling that takes over before you can choose how to respond. What is it, and when does it show up?</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p4-q3" placeholder="The reactions that feel automatic — not chosen. What are they?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p4-q3',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 04</span>
+    <p class="q-text">What pattern in your life are you most tired of repeating?</p>
+    <span class="q-sub">The thing you keep doing — or that keeps happening — that you genuinely want to be different. You don't have to know why it happens yet. Just name it.</span>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="p4-q4" placeholder="What are you most ready to stop carrying?"></textarea>
+      <button class="mic-btn" onclick="toggleMic('p4-q4',this)" title="Speak your answer">
+        <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="generateSectionReflection(4)">See Your Reflection &rarr;</button>
+  </div>
+
+  <div id="p4-reflection-wrap" style="display:none;margin-top:2rem">
+    <span class="section-label">Your Life Today — Reflected Back</span>
+    <div class="card2">
+      <div id="p4-reflection-content" class="ai-output"></div>
+    </div>
+    <div class="confirm-card" id="p4-confirm">
+      <p>Does this feel like a fair picture of where these patterns are showing up today?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-rose" onclick="confirmSection(4)">Yes, that's right &rarr;</button>
+        <button class="btn" onclick="showCorrection(4)">I'd like to add something</button>
+      </div>
+      <div class="correction-wrap" id="p4-correction">
+        <label>What would you like to add or correct?</label>
+        <div class="voice-wrap">
+          <textarea class="voice-textarea" id="p4-correction-text" placeholder="Add anything that felt missing or not quite right." style="min-height:80px"></textarea>
+          <button class="mic-btn" onclick="toggleMic('p4-correction-text',this)" title="Speak your answer">
+            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="#C49080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-rose" onclick="confirmSection(4)" style="margin-top:.5rem">Save and continue &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: THE MIRROR -->
+<div class="tab-content" id="tab-5">
+  <h2 class="section-heading">The Mirror</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Everything you've shared, brought together — the patterns across your whole life.</p>
+
+  <div class="teaching">
+    <p>This is where it all comes together. Not to judge. Not to diagnose. Just to help you see what has been there all along — the threads that connect your early world to where you are today.</p>
+  </div>
+
+  <div id="mirror-placeholder" class="card" style="text-align:center;padding:2.5rem">
+    <p style="font-family:var(--font-d);font-size:1.1rem;font-style:italic;color:var(--grey);margin-bottom:1rem">Complete all four sections first to unlock your full pattern reflection.</p>
+    <p style="font-size:12px;color:var(--grey)">Each section needs to be confirmed before The Mirror becomes available.</p>
+  </div>
+
+  <div id="mirror-ready" style="display:none">
+    <div class="btn-group" style="margin-bottom:2rem">
+      <button class="btn btn-rose" onclick="generateMirror()" id="mirror-btn">Generate My Mirror &rarr;</button>
+    </div>
+
+    <div id="mirror-output" style="display:none">
+      <div class="card2" style="margin-bottom:1.5rem">
+        <span class="section-label">Patterns Identified</span>
+        <div id="mirror-tags" class="pattern-tags"></div>
+      </div>
+
+      <div class="card2" style="margin-bottom:1.5rem">
+        <span class="section-label">The Full Reflection</span>
+        <div id="mirror-content" class="ai-output"></div>
+      </div>
+
+      <div class="reflect-qs">
+        <span class="section-label">Sit With These</span>
+        <div class="card">
+          <p style="font-size:12px;color:var(--grey);margin-bottom:1.25rem;font-style:italic">These questions aren't for answering out loud. They're for sitting with quietly — and coming back to over time.</p>
+        </div>
+        <div class="reflect-q"><p>Which pattern surprised you most?</p></div>
+        <div class="reflect-q"><p>Which pattern feels most familiar — like you've always known it was there?</p></div>
+        <div class="reflect-q"><p>Was there anything you'd never connected before until now?</p></div>
+        <div class="reflect-q"><p>Did any memory come back while reading this?</p></div>
+        <div class="reflect-q"><p>Is there one moment from your past that you see differently now?</p></div>
+        <div class="reflect-q"><p>What would you most like to understand more deeply?</p></div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-rose" onclick="saveMirrorEntry()">Save This Entry</button>
+        <button class="btn" onclick="downloadMirror()">Download</button>
+        <span class="saved-msg" id="mirror-saved-msg">Saved to Past Entries</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: PAST ENTRIES -->
+<div class="tab-content" id="tab-6">
+  <h2 class="section-heading">Past Entries</h2>
+  <p style="color:var(--grey);font-size:13px;margin-bottom:1.5rem">Your Pattern Mirror sessions over time — a record of how far you've come.</p>
+
+  <div class="teaching">
+    <p>Growth is invisible on a day-to-day basis. Coming back to see what you wrote six months ago is often where you realise just how much has changed.</p>
+  </div>
+
+  <div id="past-entries-list">
+    <div class="empty-state" id="past-empty">
+      <p>Your completed Pattern Mirror sessions will appear here.</p>
+    </div>
+  </div>
+
+  <div id="past-entries-actions" style="display:none;margin-top:1rem">
+    <button class="btn" onclick="downloadAllEntries()">Download All Entries</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+var recognition = null;
+var listeningTarget = null;
+var sectionReflections = {1:null, 2:null, 3:null, 4:null};
+var sectionConfirmed = {1:false, 2:false, 3:false, 4:false};
+var sectionCorrections = {1:'', 2:'', 3:'', 4:''};
+
+// ── TABS ───────────────────────────────────────────────────────
+function goTab(idx, btn) {
+  var tabs = document.querySelectorAll('.tab-content');
+  var btns = document.querySelectorAll('.tab-btn');
+  var segs = document.querySelectorAll('.tab-seg');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  document.getElementById('tab-' + idx).classList.add('active');
+  if (btn) btn.classList.add('active');
+  for (var i = 0; i < segs.length; i++) {
+    segs[i].classList.remove('active','done');
+    if (i < idx) segs[i].classList.add('done');
+    if (i === idx) segs[i].classList.add('active');
+  }
+  window.scrollTo(0,0);
+  if (idx === 6) renderPastEntries();
+}
+
+function markDone(idx) {
+  var btns = document.querySelectorAll('.tab-btn');
+  if (btns[idx]) btns[idx].classList.add('completed');
+}
+
+// ── VOICE ──────────────────────────────────────────────────────
+function toggleMic(textareaId, btn) {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { btn.style.opacity = '0.3'; return; }
+  if (recognition && listeningTarget === textareaId) { recognition.stop(); return; }
+  if (recognition) recognition.stop();
+  recognition = new SR();
+  recognition.lang = 'en-GB';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  listeningTarget = textareaId;
+  var textarea = document.getElementById(textareaId);
+  var existing = textarea.value;
+  recognition.onstart = function() { btn.classList.add('listening'); };
+  recognition.onresult = function(e) {
+    var interim = '';
+    var final = existing;
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) { final += (final ? ' ' : '') + e.results[i][0].transcript; existing = final; }
+      else { interim += e.results[i][0].transcript; }
+    }
+    textarea.value = final + (interim ? ' ' + interim : '');
+  };
+  recognition.onend = function() { btn.classList.remove('listening'); listeningTarget = null; };
+  recognition.start();
+}
+
+// ── COLLECT SECTION ANSWERS ────────────────────────────────────
+function getSectionAnswers(section) {
+  var answers = {};
+  if (section === 1) {
+    answers.q1 = document.getElementById('p1-q1').value;
+    answers.q2 = document.getElementById('p1-q2').value;
+    answers.q3 = document.getElementById('p1-q3').value;
+    answers.q4 = document.getElementById('p1-q4').value;
+    answers.q5 = document.getElementById('p1-q5').value;
+  } else if (section === 2) {
+    answers.q1 = document.getElementById('p2-q1').value;
+    answers.q2 = document.getElementById('p2-q2').value;
+    answers.q3 = document.getElementById('p2-q3').value;
+    answers.q4 = document.getElementById('p2-q4').value;
+    answers.q5 = document.getElementById('p2-q5').value;
+  } else if (section === 3) {
+    answers.q1 = document.getElementById('p3-q1').value;
+    answers.q2 = document.getElementById('p3-q2').value;
+    answers.q3 = document.getElementById('p3-q3').value;
+    answers.q4 = document.getElementById('p3-q4').value;
+    answers.q5 = document.getElementById('p3-q5').value;
+  } else if (section === 4) {
+    answers.q1 = document.getElementById('p4-q1').value;
+    answers.q2 = document.getElementById('p4-q2').value;
+    answers.q3 = document.getElementById('p4-q3').value;
+    answers.q4 = document.getElementById('p4-q4').value;
+  }
+  return answers;
+}
+
+function hasAnyAnswer(section) {
+  var a = getSectionAnswers(section);
+  return Object.values(a).some(function(v) { return v && v.trim().length > 0; });
+}
+
+// ── SECTION REFLECTION PROMPTS ─────────────────────────────────
+function buildSectionPrompt(section, answers) {
+  var sysPrompt = "You are a warm, grounded reflection tool for The Attachment Code. Your purpose is to help people recognise the emotional patterns that have shaped their lives — not to diagnose, label, or advise. You reflect what they have shared back to them in a way that is organised, compassionate, and quietly illuminating. You never tell someone who they are. You help them see themselves more clearly.\n\nVoice: Write like a perceptive friend who tells the truth without performing it. Conversational but not casual. No therapy-speak, no coach language, no filler phrases like 'your feelings are valid' or 'it makes sense that you feel this way'. No em dashes. No bullet points — write in connected prose paragraphs. Use contractions throughout. Aim for 6th grade reading level.\n\nFormat: Use short labelled sections with headings in UPPERCASE. 3-5 short paragraphs total. Stay close to what was actually shared — do not invent or project. If the person shared very little, reflect that gently and with openness.";
+
+  var userMsg = '';
+
+  if (section === 1) {
+    userMsg = "This person has just shared their early childhood experience. Here are their answers:\n\n";
+    userMsg += "Home atmosphere: " + (answers.q1 || '[not answered]') + "\n\n";
+    userMsg += "How key people made them feel: " + (answers.q2 || '[not answered]') + "\n\n";
+    userMsg += "A moment when things shifted: " + (answers.q3 || '[not answered]') + "\n\n";
+    userMsg += "What they learned about expressing feelings: " + (answers.q4 || '[not answered]') + "\n\n";
+    userMsg += "A memory that still carries weight: " + (answers.q5 || '[not answered]') + "\n\n";
+    userMsg += "Reflect back what you can see about the emotional environment in which their patterns first began developing. Focus on what the emotional world felt like for them — not cataloguing events. Use a heading like 'WHAT YOUR EARLY WORLD FELT LIKE' and then 'WHERE PATTERNS MAY HAVE BEGUN'. End with a short, grounded closing sentence — not advice, just an observation that invites them to sit with what they've read.";
+  } else if (section === 2) {
+    userMsg = "This person has just shared their experience of growing up — adolescence, school years, friendships, identity. Here are their answers:\n\n";
+    userMsg += "Fitting in at school: " + (answers.q1 || '[not answered]') + "\n\n";
+    userMsg += "Friendships growing up: " + (answers.q2 || '[not answered]') + "\n\n";
+    userMsg += "First experience of rejection and how they handled it: " + (answers.q3 || '[not answered]') + "\n\n";
+    userMsg += "How they saw themselves as a teenager: " + (answers.q4 || '[not answered]') + "\n\n";
+    userMsg += "Strategies developed to feel safe or accepted: " + (answers.q5 || '[not answered]') + "\n\n";
+    userMsg += "Reflect back what protective strategies were beginning to emerge during these years — the things they started doing to survive, belong, or protect themselves. Use headings like 'WHO YOU WERE BECOMING' and 'THE STRATEGIES THAT BEGAN HERE'. Stay close to what they shared. No advice. Just clear, warm recognition.";
+  } else if (section === 3) {
+    userMsg = "This person has just shared about recurring themes across their adult relationships — romantic, family, friendships, work. Here are their answers:\n\n";
+    userMsg += "Themes across romantic relationships: " + (answers.q1 || '[not answered]') + "\n\n";
+    userMsg += "How they handle conflict across different areas of life: " + (answers.q2 || '[not answered]') + "\n\n";
+    userMsg += "How they relate to intimacy and closeness: " + (answers.q3 || '[not answered]') + "\n\n";
+    userMsg += "The role they tend to play in relationships: " + (answers.q4 || '[not answered]') + "\n\n";
+    userMsg += "Losses they haven't fully made peace with: " + (answers.q5 || '[not answered]') + "\n\n";
+    userMsg += "Reflect back what keeps repeating across their adult life — not one relationship but the through-line across all of them. Use headings like 'WHAT KEEPS SHOWING UP' and 'THE ROLE YOU TEND TO PLAY'. Focus on pattern recognition across the whole picture. No analysis of specific people. No advice.";
+  } else if (section === 4) {
+    userMsg = "This person has just shared about their life today — current triggers, what makes them feel safe, automatic reactions, and patterns they want to change. Here are their answers:\n\n";
+    userMsg += "Situations that affect them most strongly: " + (answers.q1 || '[not answered]') + "\n\n";
+    userMsg += "What makes them feel safe vs what makes them withdraw: " + (answers.q2 || '[not answered]') + "\n\n";
+    userMsg += "Emotional reactions that feel automatic: " + (answers.q3 || '[not answered]') + "\n\n";
+    userMsg += "The pattern they're most tired of repeating: " + (answers.q4 || '[not answered]') + "\n\n";
+    userMsg += "Reflect back how the old patterns from earlier in their life are still showing up today. Use headings like 'WHERE THE OLD PATTERNS SHOW UP NOW' and 'WHAT YOUR REACTIONS ARE TELLING YOU'. Show how today's triggers and reactions connect to what was formed earlier — without spelling it out too explicitly. Let them feel the connection rather than having it told to them. No advice. No diagnoses.";
+  }
+
+  return { system: sysPrompt, user: userMsg };
+}
+
+// ── GENERATE SECTION REFLECTION ────────────────────────────────
+async function generateSectionReflection(section) {
+  if (!hasAnyAnswer(section)) {
+    alert("Share something in at least one question before generating your reflection.");
+    return;
+  }
+
+  var wrapId = 'p' + section + '-reflection-wrap';
+  var contentId = 'p' + section + '-reflection-content';
+  var confirmId = 'p' + section + '-confirm';
+
+  document.getElementById(wrapId).style.display = 'block';
+  document.getElementById(confirmId).style.display = 'none';
+  document.getElementById(contentId).innerHTML = '<div class="ai-loading"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></div>';
+
+  window.scrollTo(0, document.getElementById(wrapId).offsetTop - 100);
+
+  var answers = getSectionAnswers(section);
+  var prompt = buildSectionPrompt(section, answers);
+
+  try {
+    var response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: prompt.system,
+        messages: [{ role: "user", content: prompt.user }]
+      })
+    });
+
+    var data = await response.json();
+    var text = data.content && data.content[0] ? data.content[0].text : '';
+    text = formatAIOutput(text);
+
+    document.getElementById(contentId).innerHTML = text;
+    sectionReflections[section] = data.content && data.content[0] ? data.content[0].text : '';
+    document.getElementById(confirmId).style.display = 'block';
+
+  } catch(err) {
+    document.getElementById(contentId).innerHTML = '<p style="color:var(--grey)">Something went wrong. Please try again.</p>';
+  }
+}
+
+// ── FORMAT AI OUTPUT ───────────────────────────────────────────
+function formatAIOutput(text) {
+  // Convert uppercase section headings to styled h3
+  text = text.replace(/^([A-Z][A-Z\s']+[A-Z])$/gm, '<h3>$1</h3>');
+  // Convert double newlines to paragraph breaks
+  var paras = text.split(/\n\n+/);
+  var out = '';
+  for (var i = 0; i < paras.length; i++) {
+    var p = paras[i].trim();
+    if (!p) continue;
+    if (p.startsWith('<h3>')) { out += p; } else { out += '<p>' + p.replace(/\n/g,' ') + '</p>'; }
+  }
+  return out;
+}
+
+// ── CONFIRM / CORRECTION ───────────────────────────────────────
+function showCorrection(section) {
+  document.getElementById('p' + section + '-correction').style.display = 'block';
+}
+
+function confirmSection(section) {
+  var correctionEl = document.getElementById('p' + section + '-correction-text');
+  if (correctionEl && correctionEl.value.trim()) {
+    sectionCorrections[section] = correctionEl.value.trim();
+  }
+  sectionConfirmed[section] = true;
+  markDone(section);
+
+  // Move to next tab
+  var nextTab = section + 1;
+  var nextBtn = document.querySelectorAll('.tab-btn')[nextTab];
+  goTab(nextTab, nextBtn);
+
+  // Check if all four confirmed
+  checkMirrorReady();
+}
+
+function checkMirrorReady() {
+  var allDone = sectionConfirmed[1] && sectionConfirmed[2] && sectionConfirmed[3] && sectionConfirmed[4];
+  if (allDone) {
+    document.getElementById('mirror-placeholder').style.display = 'none';
+    document.getElementById('mirror-ready').style.display = 'block';
+  }
+}
+
+// ── FULL MIRROR PROMPT ─────────────────────────────────────────
+function buildMirrorPrompt() {
+  var sysPrompt = "You are the final reflective stage of The Pattern Mirror — a tool from The Attachment Code that helps people recognise the recurring emotional patterns that have shaped their entire life. You have now received four confirmed reflections covering a person's childhood, adolescence, adult relationships, and current life. Your job is to join the dots.\n\nYou are not a therapist. You are not diagnosing. You are helping someone see — possibly for the first time — the through-line that connects their earliest experiences to who they are today.\n\nVoice: Warm, clear, grounded. Like a perceptive friend who tells the truth without performing it. No therapy-speak. No coach language. No filler. No em dashes. Contractions throughout. 6th grade reading level. Write in connected prose paragraphs — no bullet points.\n\nYour response has two parts:\n\nPART ONE — PATTERN TAGS (for the UI)\nReturn a JSON block at the very start of your response in this exact format:\n[PATTERNS:pattern one|pattern two|pattern three|pattern four|pattern five]\nIdentify 3-6 recurring patterns from across the full life story. Keep each tag short — 3-6 words. These will display as visual tags above the full reflection. Examples: 'fear of abandonment', 'over-responsibility', 'difficulty trusting closeness', 'earning love', 'emotional shutdown under pressure'.\n\nPART TWO — THE FULL REFLECTION\nAfter the pattern tags, write the full reflection. Use short uppercase section headings. Structure:\n- THE THREAD RUNNING THROUGH IT ALL (the central connecting pattern across all stages)\n- WHERE IT STARTED (connect childhood and adolescence to what came later — help them see the origin without spelling it out too bluntly)\n- HOW IT SHOWS UP NOW (connect to their current life)\n- WHAT THESE PATTERNS HAVE BEEN TRYING TO DO (normalise the patterns as survival strategies, not character flaws)\n- WHAT YOU NOW HAVE THE POWER TO SEE (close with something that feels like the beginning of possibility — not advice, not instruction, just recognition that seeing it is the first step)\n\nThe goal is for the person to read this and think: I have never seen that before. Or: oh my god, that keeps happening. The insight must feel like it comes from their own story — not from a textbook.";
+
+  var userMsg = "Here are the four confirmed section reflections for this person, plus any corrections they added:\n\n";
+
+  userMsg += "PART ONE: EARLY WORLD\n";
+  userMsg += (sectionReflections[1] || 'Not completed') + "\n";
+  if (sectionCorrections[1]) userMsg += "User correction: " + sectionCorrections[1] + "\n";
+  userMsg += "\n";
+
+  userMsg += "PART TWO: GROWING UP\n";
+  userMsg += (sectionReflections[2] || 'Not completed') + "\n";
+  if (sectionCorrections[2]) userMsg += "User correction: " + sectionCorrections[2] + "\n";
+  userMsg += "\n";
+
+  userMsg += "PART THREE: ADULT RELATIONSHIPS\n";
+  userMsg += (sectionReflections[3] || 'Not completed') + "\n";
+  if (sectionCorrections[3]) userMsg += "User correction: " + sectionCorrections[3] + "\n";
+  userMsg += "\n";
+
+  userMsg += "PART FOUR: LIFE TODAY\n";
+  userMsg += (sectionReflections[4] || 'Not completed') + "\n";
+  if (sectionCorrections[4]) userMsg += "User correction: " + sectionCorrections[4] + "\n";
+
+  userMsg += "\nNow generate the Pattern Mirror — the PATTERNS tags first, then the full reflection.";
+
+  return { system: sysPrompt, user: userMsg };
+}
+
+// ── GENERATE FULL MIRROR ───────────────────────────────────────
+async function generateMirror() {
+  var btn = document.getElementById('mirror-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  document.getElementById('mirror-output').style.display = 'block';
+  document.getElementById('mirror-content').innerHTML = '<div class="ai-loading"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></div>';
+  document.getElementById('mirror-tags').innerHTML = '';
+
+  var prompt = buildMirrorPrompt();
+
+  try {
+    var response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: prompt.system,
+        messages: [{ role: "user", content: prompt.user }]
+      })
+    });
+
+    var data = await response.json();
+    var fullText = data.content && data.content[0] ? data.content[0].text : '';
+
+    // Extract pattern tags
+    var tagMatch = fullText.match(/\[PATTERNS:([^\]]+)\]/);
+    if (tagMatch) {
+      var tags = tagMatch[1].split('|');
+      var tagsHtml = '';
+      for (var i = 0; i < tags.length; i++) {
+        tagsHtml += '<span class="pattern-tag">' + tags[i].trim() + '</span>';
+      }
+      document.getElementById('mirror-tags').innerHTML = tagsHtml;
+      fullText = fullText.replace(/\[PATTERNS:[^\]]+\]/, '').trim();
+    }
+
+    document.getElementById('mirror-content').innerHTML = formatAIOutput(fullText);
+    btn.textContent = 'Regenerate Mirror';
+    btn.disabled = false;
+
+  } catch(err) {
+    document.getElementById('mirror-content').innerHTML = '<p style="color:var(--grey)">Something went wrong. Please try again.</p>';
+    btn.disabled = false;
+    btn.textContent = 'Generate My Mirror';
+  }
+}
+
+// ── SAVE ENTRY ─────────────────────────────────────────────────
+function saveMirrorEntry() {
+  var mirrorText = document.getElementById('mirror-content').innerText || '';
+  var tagsEls = document.querySelectorAll('#mirror-tags .pattern-tag');
+  var tags = [];
+  for (var i = 0; i < tagsEls.length; i++) tags.push(tagsEls[i].textContent);
+
+  if (!mirrorText.trim()) {
+    alert('Generate your mirror first.');
+    return;
+  }
+
+  var now = new Date();
+  var entry = {
+    id: now.getTime(),
+    date: now.toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}),
+    time: now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}),
+    tags: tags,
+    sections: {
+      earlyWorld: {
+        reflection: sectionReflections[1] || '',
+        correction: sectionCorrections[1] || ''
+      },
+      growingUp: {
+        reflection: sectionReflections[2] || '',
+        correction: sectionCorrections[2] || ''
+      },
+      adultLife: {
+        reflection: sectionReflections[3] || '',
+        correction: sectionCorrections[3] || ''
+      },
+      lifeToday: {
+        reflection: sectionReflections[4] || '',
+        correction: sectionCorrections[4] || ''
+      }
+    },
+    mirror: mirrorText
+  };
+
+  var entries = loadEntries();
+  entries.unshift(entry);
+  localStorage.setItem('tac_pm_entries', JSON.stringify(entries));
+
+  var msg = document.getElementById('mirror-saved-msg');
+  msg.classList.add('show');
+  setTimeout(function() { msg.classList.remove('show'); }, 2500);
+}
+
+// ── LOAD / RENDER ENTRIES ──────────────────────────────────────
+function loadEntries() {
+  try {
+    return JSON.parse(localStorage.getItem('tac_pm_entries') || '[]');
+  } catch(e) { return []; }
+}
+
+function renderPastEntries() {
+  var entries = loadEntries();
+  var list = document.getElementById('past-entries-list');
+  var empty = document.getElementById('past-empty');
+  var actions = document.getElementById('past-entries-actions');
+
+  if (!entries.length) {
+    if (empty) empty.style.display = 'block';
+    if (actions) actions.style.display = 'none';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (actions) actions.style.display = 'block';
+
+  // Clear existing rendered entries (keep empty state)
+  var existing = list.querySelectorAll('.entry-item');
+  for (var i = 0; i < existing.length; i++) existing[i].remove();
+
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i];
+    var item = document.createElement('div');
+    item.className = 'entry-item';
+    item.setAttribute('data-id', e.id);
+
+    var tagsHtml = '';
+    if (e.tags && e.tags.length) {
+      for (var t = 0; t < e.tags.length; t++) {
+        tagsHtml += '<span class="pattern-tag" style="font-size:10px">' + e.tags[t] + '</span>';
+      }
+    }
+
+    item.innerHTML =
+      '<div class="entry-header" onclick="toggleEntry(this)">' +
+        '<div>' +
+          '<div class="entry-date">' + e.date + ' at ' + e.time + '</div>' +
+          '<div class="entry-sub">Pattern Mirror Session</div>' +
+          (tagsHtml ? '<div class="pattern-tags" style="margin-top:.5rem;gap:.35rem">' + tagsHtml + '</div>' : '') +
+        '</div>' +
+        '<div class="entry-actions">' +
+          '<button class="entry-del" onclick="deleteEntry(event,' + e.id + ')">Delete</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="entry-body">' +
+        '<div class="entry-section">' +
+          '<span class="entry-section-label">The Mirror</span>' +
+          '<div class="entry-text"><p>' + (e.mirror || '').replace(/\n\n/g,'</p><p>') + '</p></div>' +
+        '</div>' +
+      '</div>';
+
+    list.appendChild(item);
+  }
+}
+
+function toggleEntry(header) {
+  var body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function deleteEntry(event, id) {
+  event.stopPropagation();
+  if (!confirm('Delete this entry? This cannot be undone.')) return;
+  var entries = loadEntries();
+  entries = entries.filter(function(e) { return e.id !== id; });
+  localStorage.setItem('tac_pm_entries', JSON.stringify(entries));
+  renderPastEntries();
+}
+
+// ── DOWNLOAD ───────────────────────────────────────────────────
+function downloadMirror() {
+  var mirrorText = document.getElementById('mirror-content').innerText || '';
+  if (!mirrorText.trim()) { alert('Generate your mirror first.'); return; }
+
+  var tagsEls = document.querySelectorAll('#mirror-tags .pattern-tag');
+  var tags = [];
+  for (var i = 0; i < tagsEls.length; i++) tags.push(tagsEls[i].textContent);
+
+  var now = new Date();
+  var ds = now.toISOString().slice(0,10);
+  var ts = now.toTimeString().slice(0,5).replace(':','-');
+  var dateStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var line = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+
+  var parts = [
+    'THE ATTACHMENT CODE  -  THE PATTERN MIRROR\n',
+    'Generated: ' + dateStr + ' at ' + timeStr + '\n\n',
+    line + '\n',
+    'PATTERNS IDENTIFIED\n',
+    line + '\n\n',
+    (tags.length ? tags.join(' / ') : 'None identified') + '\n\n',
+    line + '\n',
+    'THE MIRROR\n',
+    line + '\n\n',
+    mirrorText + '\n\n',
+    line + '\n',
+    'The Attachment Code  -  skool.com/the-attachment-code\n',
+    'Patterns are learned. Which means they can be unlearned.\n'
+  ];
+
+  var blob = new Blob([parts.join('')], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'pattern-mirror-' + ds + '-' + ts + '.txt';
+  a.style.display = 'none'; document.body.appendChild(a); a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+function downloadAllEntries() {
+  var entries = loadEntries();
+  if (!entries.length) { alert('No entries to download.'); return; }
+  var line = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+  var parts = ['THE ATTACHMENT CODE  -  PATTERN MIRROR  -  ALL ENTRIES\n\n'];
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i];
+    parts.push(line + '\n');
+    parts.push(e.date + ' at ' + e.time + '\n');
+    if (e.tags && e.tags.length) parts.push('Patterns: ' + e.tags.join(' / ') + '\n');
+    parts.push('\n' + (e.mirror || '') + '\n\n');
+  }
+  var now = new Date();
+  var ds = now.toISOString().slice(0,10);
+  var blob = new Blob([parts.join('')], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'pattern-mirror-all-entries-' + ds + '.txt';
+  a.style.display = 'none'; document.body.appendChild(a); a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+renderPastEntries();
+</script>
+</body>
+</html>
