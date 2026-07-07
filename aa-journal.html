@@ -205,6 +205,16 @@ body { background:var(--bg); color:var(--cream); font-family:var(--font-b); font
 </style>
 </head>
 <body>
+<script>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('t') !== 'TAC010321'){
+    document.write('<style>*{margin:0;padding:0;box-sizing:border-box}</style><div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1E1E20;font-family:sans-serif;padding:2rem;text-align:center"><div style="max-width:420px"><p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#C49080;margin-bottom:1rem">The Attachment Code</p><h1 style="font-family:Georgia,serif;font-size:2rem;font-weight:300;color:#D8CEC6;margin-bottom:1rem">Members Only</h1><p style="color:#8A8078;font-size:14px;line-height:1.8;margin-bottom:2rem">This tool is exclusively for members of The Attachment Code community. Join us on Skool to access all your pathway tools.</p><a href="https://www.skool.com/the-attachment-code" style="display:inline-block;padding:.75rem 2rem;background:linear-gradient(135deg,#8C5C50 0%,#D4A898 35%,#D4A898 55%,#8C5C50 100%);color:#1E1E20;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;border-radius:8px;text-decoration:none">Join The Attachment Code</a></div></div>');
+    document.close();
+    throw new Error('Access denied');
+  }
+})();
+</script>
 <div class="container">
 
 <!-- HERO -->
