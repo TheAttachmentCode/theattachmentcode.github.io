@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Inner Critic Do You Have? | The Attachment Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1E1E20;
+    --card:#272729;
+    --rose:#C49080;
+    --rose-light:#D4A898;
+    --rose-dark:#8C5C50;
+    --cream:#D8CEC6;
+    --grey:#8A8078;
+    --border:#3A3A3C;
+    --textarea-bg:#303032;
+    --placeholder:#6E6560;
+    --gradient: linear-gradient(135deg, #8C5C50 0%, #D4A898 35%, #D4A898 55%, #8C5C50 100%);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'DM Sans', sans-serif;
+    font-weight:300;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:560px; margin:0 auto; padding:2rem 1.25rem 4rem; }
+
+  .brand{ text-align:center; margin-bottom:2rem; }
+  .brand-name{ font-family:'Cormorant Garamond', serif; font-weight:300; font-size:22px; letter-spacing:0.12em; color:var(--cream); }
+  .brand-sub{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--rose); margin-top:6px; font-weight:500; }
+
+  .orn{ display:flex; align-items:center; justify-content:center; gap:10px; margin:1.75rem 0; }
+  .orn-line{ height:1px; width:60px; }
+  .orn-line.l{ background:linear-gradient(90deg, transparent, var(--rose)); }
+  .orn-line.r{ background:linear-gradient(90deg, var(--rose), transparent); }
+  .orn-dia{ width:6px; height:6px; background:var(--rose); transform:rotate(45deg); }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem;
+    margin-bottom:1.25rem;
+  }
+
+  h1{ font-family:'Cormorant Garamond', serif; font-weight:300; font-size:1.9rem; line-height:1.3; text-align:center; margin-bottom:1rem; }
+  h1 .accent{
+    background:var(--gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  p.lead{ font-size:14px; line-height:1.85; color:var(--grey); text-align:center; margin-bottom:1.5rem; }
+
+  .btn{
+    display:block;
+    width:100%;
+    background:var(--gradient);
+    color:var(--bg);
+    border:none;
+    border-radius:10px;
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:16px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .btn.ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--grey);
+  }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .progress-track{
+    position:sticky; top:0; z-index:10;
+    height:3px;
+    background:var(--border);
+    margin-bottom:2rem;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, #8C5C50, #D4A898);
+    width:0%;
+  }
+
+  .q-label{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--rose); font-weight:500; margin-bottom:0.75rem; text-align:center; }
+  .q-text{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.3rem; line-height:1.6; text-align:center; margin-bottom:1.75rem; font-weight:400; }
+
+  .scale-row{ display:flex; gap:8px; margin-bottom:0.5rem; }
+  .scale-btn{
+    flex:1;
+    background:var(--textarea-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    padding:14px 4px;
+    font-family:'DM Sans', sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .scale-btn.selected{
+    background:var(--gradient);
+    color:var(--bg);
+    border-color:transparent;
+  }
+  .scale-caption{ display:flex; justify-content:space-between; font-size:10px; color:var(--placeholder); margin-top:6px; margin-bottom:1.5rem; }
+
+  .option-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:var(--textarea-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    padding:14px 16px;
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    cursor:pointer;
+    margin-bottom:10px;
+  }
+  .option-btn.selected{
+    background:linear-gradient(135deg, rgba(140,92,80,0.35), rgba(196,144,128,0.2));
+    border-color:var(--rose);
+  }
+
+  .bar-row{ margin-bottom:1.5rem; }
+  .bar-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .bar-name{ font-family:'Cormorant Garamond', serif; font-size:1.1rem; font-weight:500; }
+  .bar-pct{ font-size:12px; color:var(--rose); font-weight:500; }
+  .bar-track{ height:10px; background:var(--textarea-bg); border-radius:6px; overflow:hidden; margin-bottom:8px; }
+  .bar-fill{ height:100%; background:var(--gradient); border-radius:6px; }
+  .bar-desc{ font-size:13px; line-height:1.7; color:var(--grey); }
+
+  .wall{ text-align:center; padding-top:4rem; }
+  .wall input{
+    width:100%;
+    background:var(--textarea-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    padding:14px;
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    margin-bottom:1rem;
+    text-align:center;
+  }
+  .wall input::placeholder{ color:var(--placeholder); }
+
+  .go-deeper-box{ margin-top:1rem; }
+  .deeper-text{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.05rem; line-height:1.8; color:var(--cream); }
+  .loading{ text-align:center; font-size:13px; color:var(--grey); padding:1rem 0; }
+
+  .hidden{ display:none; }
+  a.link{ color:var(--rose); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div id="memberWall" class="wrap wall hidden">
+  <div class="brand">
+    <div class="brand-name">THE ATTACHMENT CODE</div>
+  </div>
+  <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+  <h1>This tool is for <span class="accent">members</span></h1>
+  <p class="lead">Enter your member email to take the Inner Critic assessment.</p>
+  <input type="email" id="gateInput" placeholder="Enter your member email" autocomplete="off" />
+  <button class="btn" id="gateBtn" onclick="checkGate()">Enter</button>
+  <div id="gateErr" style="font-size:12px; color:#8C5C50; margin-top:0.75rem;"></div>
+  <p class="lead" style="margin-top:1.5rem;">Not a member yet? <a class="link" href="https://skool.com/the-attachment-code" target="_blank">Join The Attachment Code</a></p>
+</div>
+
+<div id="appContent" class="wrap hidden">
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="brand">
+    <div class="brand-name">THE ATTACHMENT CODE</div>
+    <div class="brand-sub">Inner Critic Assessment</div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="screenStart">
+    <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+    <h1>Which <span class="accent">Inner Critic</span> do you have?</h1>
+    <p class="lead">There isn't just one Inner Critic voice. Most of us carry a mix. This assessment shows you where all seven show up for you right now, not just which one is loudest.</p>
+    <div class="card">
+      <p class="lead" style="margin-bottom:0;">21 questions. About 5 minutes. No right answers, just honest ones.</p>
+    </div>
+    <button class="btn" onclick="startQuiz()">Begin</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="screenQuiz" class="hidden">
+    <div class="q-label" id="qCounter">Question 1 of 21</div>
+    <div class="q-text" id="qText"></div>
+    <div id="qAnswerArea"></div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screenResults" class="hidden">
+    <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+    <h1>Your <span class="accent">Inner Critic</span> profile</h1>
+    <p class="lead">Ranked from strongest to quietest. Remember, no villains, no victims, just patterns.</p>
+    <div class="card" id="resultsBars"></div>
+
+    <div class="card go-deeper-box">
+      <p class="lead" style="margin-bottom:1rem;">Want a deeper read on how your top Critics work together?</p>
+      <button class="btn ghost" id="deeperBtn" onclick="goDeeper()">Go Deeper</button>
+      <div id="deeperOutput" style="margin-top:1rem;"></div>
+    </div>
+
+    <button class="btn ghost" onclick="restartQuiz()" style="margin-top:0.5rem;">Retake Assessment</button>
+  </div>
+
+</div>
+
+<script>
+
+var WORKER_URL = "https://wispy-dust-5244.djmisschief.workers.dev";
+
+function tacVerifyEmail(email, onResult){
+  fetch(WORKER_URL + "/check-access", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ onResult(!!data.active); })
+  .catch(function(){ onResult(false); });
+}
+
+function showApp(){
+  document.getElementById("appContent").classList.remove("hidden");
+  document.getElementById("memberWall").classList.add("hidden");
+}
+
+function showWall(){
+  document.getElementById("memberWall").classList.remove("hidden");
+  document.getElementById("appContent").classList.add("hidden");
+}
+
+function checkGate(){
+  var input = document.getElementById("gateInput");
+  var btn = document.getElementById("gateBtn");
+  var errEl = document.getElementById("gateErr");
+  var val = input.value.trim().toLowerCase();
+  if(!val || val.indexOf("@") === -1){
+    errEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+  errEl.textContent = "";
+  if(btn){ btn.textContent = "Checking..."; }
+  tacVerifyEmail(val, function(active){
+    if(btn){ btn.textContent = "Enter"; }
+    if(active){
+      try{ localStorage.setItem("tac-email", val); }catch(e){}
+      showApp();
+    } else {
+      errEl.textContent = "That email isn't showing as an active member. Please try again.";
+    }
+  });
+}
+
+function checkAccess(){
+  var stored = null;
+  try{ stored = localStorage.getItem("tac-email"); }catch(e){}
+  if(!stored){
+    showWall();
+    return;
+  }
+  tacVerifyEmail(stored, function(active){
+    if(active){
+      showApp();
+    } else {
+      showWall();
+    }
+  });
+}
+
+// ---- QUIZ DATA ----
+// type keys: perfectionist, controller, taskmaster, underminer, destroyer, guilttripper, molder
+
+var TYPE_INFO = {
+  perfectionist: {
+    name: "The Perfectionist",
+    desc: "Pushes for flawless so you never feel exposed. It believes if everything's perfect, no one can find fault with you."
+  },
+  controller: {
+    name: "The Inner Controller",
+    desc: "Keeps a tight grip on your impulses so you don't do anything you'd regret or be ashamed of later."
+  },
+  taskmaster: {
+    name: "The Taskmaster",
+    desc: "Ties your worth to output. It believes rest has to be earned, not just taken."
+  },
+  underminer: {
+    name: "The Underminer",
+    desc: "Talks you out of trying before you can fail. It thinks staying small is safer than risking rejection."
+  },
+  destroyer: {
+    name: "The Destroyer",
+    desc: "The harshest voice. It attacks who you are, not just what you did, usually rooted in early experiences of feeling not good enough."
+  },
+  guilttripper: {
+    name: "The Guilt Tripper",
+    desc: "Keeps you accountable to others, sometimes at your own expense. It fears you'll hurt someone and lose their love."
+  },
+  molder: {
+    name: "The Molder",
+    desc: "Shapes you to fit in. It believes belonging depends on hiding the parts of you that don't match what's expected."
+  }
+};
+
+var QUESTIONS = [
+  { type:"perfectionist", format:"scale", text:"I redo things over and over because \"good enough\" doesn't feel good enough." },
+  { type:"controller", format:"scale", text:"I keep a tight leash on myself so I don't do anything I'd regret." },
+  { type:"taskmaster", format:"scale", text:"I feel like I haven't earned rest until everything on my list is done." },
+  { type:"underminer", format:"scale", text:"Before I try something new, a voice tells me I'll probably fail." },
+  { type:"destroyer", format:"scale", text:"Somewhere underneath it all, I feel like something is wrong with me." },
+  { type:"guilttripper", format:"scale", text:"I feel guilty when I put my own needs ahead of someone else's." },
+  { type:"molder", format:"scale", text:"I've shaped how I look, talk, or act to fit in with what's expected of me." },
+
+  { type:"perfectionist", format:"scale", text:"I've put off finishing something because it wasn't perfect yet." },
+  { type:"controller", format:"scale", text:"I feel unsafe when I'm not in control of my own behavior." },
+  { type:"taskmaster", format:"scale", text:"A day without being productive feels like a wasted day." },
+  { type:"underminer", format:"scale", text:"I hold back from going after things I actually want." },
+  { type:"destroyer", format:"scale", text:"When I mess up, the voice in my head is vicious, not just disappointed." },
+  { type:"guilttripper", format:"scale", text:"I replay things I said or did that might have hurt someone." },
+  { type:"molder", format:"scale", text:"I worry about what people would think if they saw the real me." },
+
+  { type:"perfectionist", format:"scenario", text:"You're about to send an important email. You:", options:[
+    {label:"Read it five more times, sure you missed something", points:4},
+    {label:"Send it and move on", points:0},
+    {label:"Ask someone else to check it first", points:2},
+    {label:"Feel a flash of dread and put off sending it", points:3}
+  ]},
+  { type:"controller", format:"scenario", text:"Someone offers you a second slice of cake. You:", options:[
+    {label:"Say no before you've even thought about it", points:3},
+    {label:"Have some and don't think twice", points:0},
+    {label:"Have some, then feel guilty after", points:2},
+    {label:"Say yes, then quietly judge yourself for the rest of the day", points:4}
+  ]},
+  { type:"taskmaster", format:"scenario", text:"It's Saturday and you have nothing planned. You:", options:[
+    {label:"Relax, no problem", points:0},
+    {label:"Feel a nagging pull to \"do something useful\"", points:2},
+    {label:"Make a to-do list within the hour", points:3},
+    {label:"Feel restless and can't settle until you've accomplished something", points:4}
+  ]},
+  { type:"underminer", format:"scenario", text:"A friend suggests you apply for a promotion. Your first thought is:", options:[
+    {label:"\"That could be fun, let's see\"", points:0},
+    {label:"\"They probably won't pick me anyway\"", points:3},
+    {label:"\"I'm not really qualified enough\"", points:2},
+    {label:"\"What if I get it and then can't handle it\"", points:4}
+  ]},
+  { type:"destroyer", format:"scenario", text:"You make a mistake at work. The thought that shows up first is:", options:[
+    {label:"\"Okay, how do I fix this\"", points:0},
+    {label:"\"I always mess things up\"", points:2},
+    {label:"\"Everyone probably thinks less of me now\"", points:3},
+    {label:"\"I'm just not good enough, full stop\"", points:4}
+  ]},
+  { type:"guilttripper", format:"scenario", text:"You had to say no to a friend who needed help. Afterward you:", options:[
+    {label:"Feel fine, you had good reasons", points:0},
+    {label:"Feel a pang but let it go", points:1},
+    {label:"Can't stop thinking about how it landed for them", points:3},
+    {label:"Feel like a bad friend for the rest of the day", points:4}
+  ]},
+  { type:"molder", format:"scenario", text:"You want to make an unconventional choice. Your first instinct is:", options:[
+    {label:"Go for it, it's your life", points:0},
+    {label:"Wonder what your family would say", points:2},
+    {label:"Quietly worry you'll be judged or left out", points:3},
+    {label:"Decide it's safer to just stick with what's expected", points:4}
+  ]}
+];
+
+var currentQ = 0;
+var answers = [];
+
+function startQuiz(){
+  document.getElementById("screenStart").classList.add("hidden");
+  document.getElementById("screenQuiz").classList.remove("hidden");
+  currentQ = 0;
+  answers = [];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  var q = QUESTIONS[currentQ];
+  document.getElementById("qCounter").textContent = "Question " + (currentQ + 1) + " of " + QUESTIONS.length;
+  document.getElementById("qText").textContent = q.text;
+  document.getElementById("progressFill").style.width = Math.round((currentQ / QUESTIONS.length) * 100) + "%";
+
+  var area = document.getElementById("qAnswerArea");
+  area.innerHTML = "";
+
+  if(q.format === "scale"){
+    var row = document.createElement("div");
+    row.className = "scale-row";
+    for(var i = 1; i <= 5; i++){
+      var b = document.createElement("button");
+      b.className = "scale-btn";
+      b.textContent = i;
+      b.setAttribute("data-val", i);
+      b.onclick = (function(val){
+        return function(){ selectScale(val); };
+      })(i);
+      row.appendChild(b);
+    }
+    area.appendChild(row);
+    var caption = document.createElement("div");
+    caption.className = "scale-caption";
+    caption.innerHTML = "<span>Not me at all</span><span>Very much me</span>";
+    area.appendChild(caption);
+  } else {
+    for(var j = 0; j < q.options.length; j++){
+      var opt = q.options[j];
+      var ob = document.createElement("button");
+      ob.className = "option-btn";
+      ob.textContent = opt.label;
+      ob.onclick = (function(points){
+        return function(){ selectOption(points); };
+      })(opt.points);
+      area.appendChild(ob);
+    }
+  }
+}
+
+function selectScale(val){
+  var points = val - 1;
+  recordAnswer(points);
+}
+
+function selectOption(points){
+  recordAnswer(points);
+}
+
+function recordAnswer(points){
+  answers.push({ type: QUESTIONS[currentQ].type, points: points });
+  currentQ = currentQ + 1;
+  if(currentQ >= QUESTIONS.length){
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+var finalScores = {};
+
+function showResults(){
+  document.getElementById("progressFill").style.width = "100%";
+  document.getElementById("screenQuiz").classList.add("hidden");
+  document.getElementById("screenResults").classList.remove("hidden");
+
+  var totals = {};
+  var keys = Object.keys(TYPE_INFO);
+  for(var i = 0; i < keys.length; i++){ totals[keys[i]] = 0; }
+
+  for(var a = 0; a < answers.length; a++){
+    totals[answers[a].type] = totals[answers[a].type] + answers[a].points;
+  }
+
+  var maxScore = 12; // 3 questions, max 4 points each
+  var sortable = [];
+  for(var k = 0; k < keys.length; k++){
+    var key = keys[k];
+    var pct = Math.round((totals[key] / maxScore) * 100);
+    sortable.push({ key: key, pct: pct });
+    finalScores[key] = pct;
+  }
+  sortable.sort(function(x, y){ return y.pct - x.pct; });
+
+  var container = document.getElementById("resultsBars");
+  container.innerHTML = "";
+  for(var s = 0; s < sortable.length; s++){
+    var item = sortable[s];
+    var info = TYPE_INFO[item.key];
+    var row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML =
+      "<div class='bar-head'><div class='bar-name'>" + info.name + "</div><div class='bar-pct'>" + item.pct + "%</div></div>" +
+      "<div class='bar-track'><div class='bar-fill' style='width:" + item.pct + "%;'></div></div>" +
+      "<div class='bar-desc'>" + info.desc + "</div>";
+    container.appendChild(row);
+  }
+}
+
+function restartQuiz(){
+  document.getElementById("screenResults").classList.add("hidden");
+  document.getElementById("deeperOutput").innerHTML = "";
+  document.getElementById("deeperBtn").classList.remove("hidden");
+  document.getElementById("screenStart").classList.remove("hidden");
+  document.getElementById("progressFill").style.width = "0%";
+}
+
+function goDeeper(){
+  var btn = document.getElementById("deeperBtn");
+  var output = document.getElementById("deeperOutput");
+  btn.classList.add("hidden");
+  output.innerHTML = "<div class='loading'>Reading your pattern...</div>";
+
+  var sortable = [];
+  var keys = Object.keys(finalScores);
+  for(var k = 0; k < keys.length; k++){
+    sortable.push({ key: keys[k], pct: finalScores[keys[k]] });
+  }
+  sortable.sort(function(x, y){ return y.pct - x.pct; });
+
+  var topTypes = TYPE_INFO[sortable[0].key].name + " and " + TYPE_INFO[sortable[1].key].name;
+  var scoreSummary = "";
+  for(var i = 0; i < sortable.length; i++){
+    scoreSummary = scoreSummary + TYPE_INFO[sortable[i].key].name + ": " + sortable[i].pct + "%. ";
+  }
+
+  var systemPrompt = "You are a perceptive friend who tells the truth without performing it. Write in plain, 6th grade language. Do not use em dashes. No therapy speak, no AI filler phrases. Do not invert what the scores say. Name the pattern between the person's top two Critics specifically, how they might work together or take turns, not each type described in isolation. End with one grounded, non-generic observation, not advice or a call to action. Keep it to 100 to 150 words.";
+  var userPrompt = "Here are my Inner Critic scores from an assessment: " + scoreSummary + " My top two are " + topTypes + ". Write my reflection.";
+
+  var storedEmail = "";
+  try{ storedEmail = localStorage.getItem("tac-email") || ""; }catch(e){}
+
+  fetch(WORKER_URL + "/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-TAC-Email": storedEmail },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 400,
+      system: systemPrompt,
+      messages: [
+        { role: "user", content: userPrompt }
+      ]
+    })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    var text = "";
+    if(data && data.content){
+      for(var i = 0; i < data.content.length; i++){
+        if(data.content[i].type === "text"){
+          text = text + data.content[i].text;
+        }
+      }
+    }
+    if(text === ""){
+      text = "Your reflection couldn't load right now. Your results above still stand on their own.";
+    }
+    output.innerHTML = "<div class='deeper-text'>" + text + "</div>";
+  })
+  .catch(function(err){
+    output.innerHTML = "<div class='loading'>Your reflection couldn't load right now. Your results above still stand on their own.</div>";
+  });
+}
+
+document.getElementById("gateInput").addEventListener("keydown", function(e){ if(e.key === "Enter") checkGate(); });
+
+checkAccess();
+
+</script>
+
+</body>
+</html>
