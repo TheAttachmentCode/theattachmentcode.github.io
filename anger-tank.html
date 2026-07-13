@@ -421,8 +421,8 @@ body{
   <div class="tool-name" style="margin-bottom:.5rem">The Anger Tank</div>
   <div class="divider"><div class="divider-line l"></div><div class="divider-diamond"></div><div class="divider-line r"></div></div>
   <p class="gate-sub">Members only</p>
-  <input type="text" class="gate-input" id="gateInput" placeholder="Enter access code" autocomplete="off">
-  <button class="gate-btn" onclick="checkGate()">Enter</button>
+  <input type="email" class="gate-input" id="gateInput" placeholder="Enter your member email" autocomplete="off">
+  <button class="gate-btn" id="gateBtn" onclick="checkGate()">Enter</button>
   <div class="gate-err" id="gateErr"></div>
 </div>
 
@@ -583,25 +583,54 @@ body{
 
 <script>
 /* ===== ACCESS GATE ===== */
-var TOKEN = 'TAC010321';
+var TAC_WORKER_BASE = 'https://wispy-dust-5244.djmisschief.workers.dev';
+
+function tacVerifyEmail(email, onResult){
+  fetch(TAC_WORKER_BASE + '/check-access', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ onResult(!!data.active); })
+  .catch(function(){ onResult(false); });
+}
+
 function checkGate(){
-  var val = document.getElementById('gateInput').value.replace(/\s/g,'').toUpperCase();
-  if(val === TOKEN.toUpperCase()){
-    document.getElementById('gate').style.display = 'none';
-    goToPage(2);
-  } else {
-    document.getElementById('gateErr').textContent = 'That code is not recognised. Please check and try again.';
+  var input = document.getElementById('gateInput');
+  var btn = document.getElementById('gateBtn');
+  var errEl = document.getElementById('gateErr');
+  var val = input.value.trim().toLowerCase();
+  if(!val || val.indexOf('@') === -1){
+    errEl.textContent = 'Please enter a valid email address.';
+    return;
   }
+  errEl.textContent = '';
+  if(btn){ btn.textContent = 'Checking...'; }
+  tacVerifyEmail(val, function(active){
+    if(btn){ btn.textContent = 'Enter'; }
+    if(active){
+      try{ localStorage.setItem('tac-email', val); }catch(e){}
+      document.getElementById('gate').style.display = 'none';
+      goToPage(2);
+    } else {
+      errEl.textContent = "That email isn't showing as an active member. Please try again.";
+    }
+  });
 }
 document.getElementById('gateInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') checkGate(); });
 
-/* Check URL token */
+/* Check remembered email on load */
 (function(){
-  var params = new URLSearchParams(window.location.search);
-  if(params.get('t') && params.get('t').toUpperCase() === TOKEN.toUpperCase()){
-    document.getElementById('gate').style.display = 'none';
-    goToPage(2);
-  }
+  var stored = null;
+  try{ stored = localStorage.getItem('tac-email'); }catch(e){}
+  if(!stored){ return; }
+  tacVerifyEmail(stored, function(active){
+    if(active){
+      document.getElementById('gate').style.display = 'none';
+      goToPage(2);
+    }
+  });
 })();
 
 /* ===== PAGE NAVIGATION ===== */
@@ -848,7 +877,7 @@ function generateLetter(){
 
   fetch('https://wispy-dust-5244.djmisschief.workers.dev/', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'X-TAC-Email': (localStorage.getItem('tac-email') || '') },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: 1000,
