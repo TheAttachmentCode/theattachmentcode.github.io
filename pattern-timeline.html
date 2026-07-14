@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern Timeline - The Attachment Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1E1E20;
+    --card: #272729;
+    --input: #303032;
+    --cream: #D8CEC6;
+    --rose: #C49080;
+    --rose-light: #D4A898;
+    --rose-dark: #8C5C50;
+    --border: #3A3A3C;
+    --placeholder: #6E6560;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--cream); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  .display { font-family: 'Cormorant Garamond', serif; }
+  .app { max-width: 900px; margin: 0 auto; min-height: 100vh; display: none; flex-direction: column; padding: 20px 20px 40px 20px; }
+  .app.show { display: flex; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .wordmark { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: var(--rose-light); }
+  .steps { display: none; gap: 6px; }
+  .steps.show { display: flex; }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); cursor: pointer; }
+  .step-dot.active { background: var(--rose); }
+
+  .btn { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 15px; padding: 13px 26px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #8C5C50 0%, #D4A898 35%, #D4A898 55%, #8C5C50 100%); color: #1E1E20; transition: opacity 0.2s ease, transform 0.2s ease; }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: var(--cream); border: 1px solid var(--border); font-weight: 500; }
+  .btn-ghost:hover { border-color: var(--rose); opacity: 1; }
+  .btn-small { padding: 9px 16px; font-size: 13px; }
+
+  .screen { display: none; flex: 1; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* Lock screen */
+  .lock-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .lock-box { max-width: 380px; width: 100%; text-align: center; }
+  .lock-box h2 { font-size: 24px; margin-bottom: 10px; }
+  .lock-box p { color: var(--placeholder); font-size: 13px; margin-bottom: 22px; }
+  .lock-box input { width: 100%; background: var(--input); border: 1px solid var(--border); border-radius: 8px; color: var(--cream); font-size: 14px; padding: 12px; margin-bottom: 12px; font-family: 'DM Sans', sans-serif; }
+  .lock-error { color: var(--rose-light); font-size: 12.5px; margin-top: 10px; display: none; }
+  .lock-join { margin-top: 18px; font-size: 12.5px; }
+  .lock-join a { color: var(--rose-light); }
+
+  /* Screen 1 */
+  .s1 { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 32px; }
+  .s1 h1 { font-size: 34px; font-weight: 500; font-style: italic; line-height: 1.35; max-width: 520px; margin: 0; }
+
+  /* Timeline / spine */
+  .spine-wrap { flex: 1; display: flex; flex-direction: column; }
+  .spine-title { font-size: 24px; margin: 0 0 4px 0; }
+  .spine-sub { color: var(--placeholder); font-size: 13px; margin: 0 0 24px 0; }
+  .spine { position: relative; display: flex; justify-content: space-between; padding: 10px 0 20px 0; }
+  .spine::before { content: ''; position: absolute; top: 7px; left: 20px; right: 20px; height: 2px; background: var(--border); }
+  .stage { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .stage-node { width: 14px; height: 14px; border-radius: 50%; background: var(--card); border: 2px solid var(--rose); z-index: 2; }
+  .stage-label { font-size: 10.5px; text-align: center; color: var(--placeholder); letter-spacing: 0.03em; max-width: 80px; }
+  .stage-cards { display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center; margin-top: 4px; }
+  .mini-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 10px; color: var(--cream); width: 92%; line-height: 1.3; }
+  .timeline-actions { display: flex; gap: 10px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+  .timeline-hint { text-align: center; font-size: 12px; color: var(--placeholder); margin-top: 12px; }
+
+  /* Composer modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+  .modal-backdrop.show { display: flex; }
+  .modal-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; max-width: 440px; width: 100%; padding: 26px; max-height: 90vh; overflow-y: auto; }
+  .modal-box h2 { font-size: 22px; margin: 0 0 18px 0; }
+  label { display: block; font-size: 11.5px; color: var(--placeholder); margin-bottom: 6px; margin-top: 16px; text-transform: uppercase; letter-spacing: 0.04em; }
+  textarea, select, input[type=text], input[type=email] { width: 100%; background: var(--input); border: 1px solid var(--border); border-radius: 8px; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 12px; resize: vertical; }
+  textarea::placeholder, input::placeholder { color: var(--placeholder); }
+  .intensity-row { display: flex; gap: 8px; margin-top: 8px; }
+  .pill { flex: 1; text-align: center; padding: 8px 6px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; color: var(--placeholder); }
+  .pill.selected { border-color: var(--rose); color: var(--rose-light); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+  /* Threads / family tree */
+  .map-title { font-size: 22px; margin: 0 0 4px 0; }
+  .map-sub { color: var(--placeholder); font-size: 13px; margin: 0 0 18px 0; }
+  .canvas-area { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; min-height: 300px; overflow: visible; }
+  svg.thread-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+  .tree-label { position: absolute; background: var(--bg); border: 1px solid var(--rose-dark); color: var(--rose-light); font-size: 11.5px; padding: 6px 14px; border-radius: 14px; z-index: 3; cursor: pointer; white-space: nowrap; transform: translateX(-50%); font-weight: 600; }
+  .tree-card { position: absolute; width: 140px; background: var(--input); border: 1px solid var(--border); border-radius: 8px; padding: 9px; font-size: 10.5px; line-height: 1.3; z-index: 2; transform: translateX(-50%); }
+  .tree-card .tc-tag { font-size: 8.5px; color: var(--rose-light); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; display: block; }
+  .thread-reason { margin-top: 16px; background: var(--card); border: 1px solid var(--rose-dark); border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.5; display: none; }
+  .thread-reason.show { display: block; }
+  .thread-reason .label { color: var(--rose-light); font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px; display: block; }
+  .loading-box { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 260px; gap: 14px; color: var(--placeholder); font-size: 13px; }
+  .spinner { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--rose); animation: spin 0.9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-box { background: var(--card); border: 1px solid var(--rose-dark); border-radius: 8px; padding: 16px; font-size: 13px; color: var(--rose-light); }
+
+  /* First appearance */
+  .fa-list { display: flex; flex-direction: column; gap: 14px; }
+  .fa-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .fa-item .fa-tag { font-size: 11px; color: var(--rose-light); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px; }
+  .fa-item .fa-age { font-size: 11px; color: var(--placeholder); margin-bottom: 8px; }
+  .fa-item .fa-quote { font-style: italic; font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--cream); }
+
+  /* Density */
+  .density-spine { position: relative; height: 90px; border-radius: 10px; overflow: hidden; background: var(--card); border: 1px solid var(--border); }
+  .density-segment { position: absolute; top: 0; bottom: 0; }
+  .density-caption { font-size: 12px; color: var(--placeholder); margin-top: 10px; }
+
+  /* Belief evolution */
+  .thread-select { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .thread-chip { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; color: var(--placeholder); cursor: pointer; }
+  .thread-chip.active { border-color: var(--rose); color: var(--rose-light); }
+  .belief-chain { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .belief-node { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; font-size: 14px; text-align: center; max-width: 340px; }
+  .belief-node.weak { border-style: dashed; opacity: 0.55; }
+  .belief-arrow { color: var(--rose); font-size: 16px; }
+
+  /* Break point */
+  .bp-question { font-size: 22px; margin: 0 0 20px 0; max-width: 460px; }
+  .bp-spine { position: relative; height: 4px; background: var(--border); border-radius: 2px; margin: 40px 0; cursor: pointer; }
+  .bp-marker { position: absolute; top: -9px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #8C5C50 0%, #D4A898 35%, #D4A898 55%, #8C5C50 100%); transform: translateX(-50%); box-shadow: 0 0 12px rgba(212,168,152,0.5); }
+  .bp-hint { font-size: 12px; color: var(--placeholder); }
+
+  /* Close */
+  .close-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; }
+  .close-wrap h2 { font-size: 24px; margin: 0; }
+  .close-wrap p { color: var(--placeholder); font-size: 13px; max-width: 380px; }
+
+  .bottom-nav { display: flex; justify-content: space-between; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<div class="lock-wrap" id="lockWrap">
+  <div class="lock-box">
+    <h2 class="display">The Attachment Code</h2>
+    <p>Enter the email address you used to join to access Pattern Timeline.</p>
+    <input type="email" id="lockEmail" placeholder="you@email.com">
+    <button class="btn" style="width:100%;" onclick="checkAccess()">Enter</button>
+    <div class="lock-error" id="lockError">We couldn't verify that email. Double check it, or reach out if you think this is a mistake.</div>
+    <div class="lock-join">Not a member yet? <a href="https://skool.com/the-attachment-code" target="_blank">Join The Attachment Code</a></div>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="wordmark">Pattern Timeline</div>
+    <div class="steps" id="steps"></div>
+  </div>
+
+  <!-- SCREEN 1 -->
+  <div class="screen active" data-screen="1">
+    <div class="s1">
+      <h1 class="display">The story your nervous system<br>wrote to keep you safe.</h1>
+      <button class="btn" onclick="goTo(2)">Start building</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Timeline -->
+  <div class="screen" data-screen="2">
+    <div class="spine-wrap">
+      <h2 class="spine-title display">Your timeline</h2>
+      <p class="spine-sub">Drop memories onto the stage they belong to. A sentence is enough. Come back and add more any time.</p>
+      <div class="spine" id="spine"></div>
+      <div class="timeline-actions">
+        <button class="btn btn-ghost" onclick="openComposer()">+ Add a memory</button>
+        <button class="btn" id="buildBtn" onclick="buildMap()" disabled>Build the map</button>
+      </div>
+      <div class="timeline-hint" id="timelineHint"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Threads -->
+  <div class="screen" data-screen="4">
+    <h2 class="map-title display">The threads</h2>
+    <p class="map-sub">Tap a thread to see why these connect.</p>
+    <div class="canvas-area" id="canvasArea"></div>
+    <div class="thread-reason" id="threadReason"></div>
+    <div class="bottom-nav">
+      <button class="btn btn-ghost" onclick="goTo(2)">Back to timeline</button>
+      <button class="btn" onclick="goTo(5)">Next</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: First appearance -->
+  <div class="screen" data-screen="5">
+    <h2 class="display" style="font-size:22px; margin:0 0 4px 0;">First appearance</h2>
+    <p style="color:var(--placeholder); font-size:13px; margin:0 0 20px 0;">Where each pattern first shows up, in your own words.</p>
+    <div class="fa-list" id="faList"></div>
+    <div class="bottom-nav">
+      <button class="btn btn-ghost" onclick="goTo(4)">Back</button>
+      <button class="btn" onclick="goTo(6)">Next</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: Density -->
+  <div class="screen" data-screen="6">
+    <h2 class="display" style="font-size:22px; margin:0 0 4px 0;">Pattern density</h2>
+    <p style="color:var(--placeholder); font-size:13px; margin:0 0 20px 0;">Where things clustered, based on what you marked as small, medium or big.</p>
+    <div class="density-spine" id="densitySpine"></div>
+    <div class="density-caption">The deepest color marks where the most, or the biggest, memories sit. That's not your memory exaggerating. That's where your nervous system was working hardest.</div>
+    <div class="bottom-nav">
+      <button class="btn btn-ghost" onclick="goTo(5)">Back</button>
+      <button class="btn" onclick="goTo(7)">Next</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: Belief evolution -->
+  <div class="screen" data-screen="7">
+    <h2 class="display" style="font-size:22px; margin:0 0 16px 0;">How the belief formed</h2>
+    <div class="thread-select" id="threadSelect"></div>
+    <div class="belief-chain" id="beliefChain"></div>
+    <div class="bottom-nav">
+      <button class="btn btn-ghost" onclick="goTo(6)">Back</button>
+      <button class="btn" onclick="goTo(8)">Next</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: Break point -->
+  <div class="screen" data-screen="8">
+    <h2 class="bp-question display">When did things start changing?</h2>
+    <p class="bp-hint">Tap anywhere on the line below to mark it. This one is yours to choose.</p>
+    <div class="bp-spine" id="bpSpine" onclick="placeBreakPoint(event)"></div>
+    <label>Optional note</label>
+    <input type="text" id="bpNote" placeholder="e.g. The day I joined TAC">
+    <div class="bottom-nav">
+      <button class="btn btn-ghost" onclick="goTo(7)">Back</button>
+      <button class="btn" onclick="saveBreakPoint(); goTo(9);">Continue</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 9: Close -->
+  <div class="screen" data-screen="9">
+    <div class="close-wrap">
+      <h2 class="display">Your map is here whenever you want it</h2>
+      <p>This timeline is saved on this device. Come back any time to add more, or download a copy of where things stand right now.</p>
+      <button class="btn" onclick="downloadMap()">Download map</button>
+      <button class="btn btn-ghost" onclick="goTo(2)">Back to timeline</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-backdrop" id="composerBackdrop">
+  <div class="modal-box">
+    <h2 class="display">Add a memory</h2>
+    <label>What happened</label>
+    <textarea id="cardText" rows="3" placeholder="e.g. Dad only praised me when I achieved something."></textarea>
+    <label>Which stage does this belong to</label>
+    <select id="cardStage">
+      <option value="Childhood">Childhood</option>
+      <option value="School">School</option>
+      <option value="Teen Relationships">Teen Relationships</option>
+      <option value="Adult Relationships">Adult Relationships</option>
+      <option value="Today">Today</option>
+    </select>
+    <label>How big did it feel (optional)</label>
+    <div class="intensity-row" id="intensityRow">
+      <div class="pill" data-val="small" onclick="selectIntensity(this)">Small</div>
+      <div class="pill" data-val="medium" onclick="selectIntensity(this)">Medium</div>
+      <div class="pill" data-val="big" onclick="selectIntensity(this)">Big</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="addCardFromComposer()">Add to timeline</button>
+      <button class="btn btn-ghost" onclick="closeComposer()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var WORKER_URL = 'https://wispy-dust-5244.djmisschief.workers.dev';
+var memberEmail = null;
+var current = 1;
+var stages = ["Childhood","School","Teen Relationships","Adult Relationships","Today"];
+var stepScreens = [4,5,6,7,8,9];
+
+var state = {
+  cards: [],
+  nextId: 1,
+  breakPoint: null,
+  mapResult: null,
+  lastBuilt: null
+};
+var selectedIntensity = null;
+
+/* ---------------- ACCESS ---------------- */
+function storageKey() { return 'tac_pattern_timeline_' + memberEmail; }
+
+function checkAccess() {
+  var email = document.getElementById('lockEmail').value.trim().toLowerCase();
+  if (!email) return;
+  document.getElementById('lockError').style.display = 'none';
+  fetch(WORKER_URL + '/check-access', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.active) {
+        memberEmail = email;
+        localStorage.setItem('tac_email', email);
+        loadState();
+        showApp();
+      } else {
+        document.getElementById('lockError').style.display = 'block';
+      }
+    })
+    .catch(function() {
+      document.getElementById('lockError').textContent = 'Could not reach the member check right now. Please try again in a moment.';
+      document.getElementById('lockError').style.display = 'block';
+    });
+}
+
+function showApp() {
+  document.getElementById('lockWrap').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  renderSpine();
+  goTo(state.mapResult ? 4 : 2);
+  if (state.mapResult) renderMapResult();
+}
+
+function tryAutoLogin() {
+  var saved = localStorage.getItem('tac_email');
+  if (!saved) return;
+  document.getElementById('lockEmail').value = saved;
+  memberEmail = saved;
+  fetch(WORKER_URL + '/check-access', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: saved })
+  }).then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.active) {
+        loadState();
+        showApp();
+      }
+    })
+    .catch(function() {});
+}
+
+/* ---------------- STATE PERSISTENCE ---------------- */
+function saveState() {
+  try {
+    localStorage.setItem(storageKey(), JSON.stringify(state));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    var raw = localStorage.getItem(storageKey());
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      state.cards = parsed.cards || [];
+      state.nextId = parsed.nextId || 1;
+      state.breakPoint = parsed.breakPoint || null;
+      state.mapResult = parsed.mapResult || null;
+      state.lastBuilt = parsed.lastBuilt || null;
+    }
+  } catch (e) {}
+}
+
+/* ---------------- NAV ---------------- */
+function goTo(n) {
+  current = n;
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.querySelector('.screen[data-screen="' + n + '"]').classList.add('active');
+  renderSteps();
+  if (n === 2) { renderSpine(); updateBuildButton(); }
+  if (n === 5) renderFirstAppearance();
+  if (n === 6) renderDensity();
+  if (n === 7) renderThreadSelect();
+  window.scrollTo(0, 0);
+}
+
+function renderSteps() {
+  var wrap = document.getElementById('steps');
+  wrap.innerHTML = '';
+  if (stepScreens.indexOf(current) === -1) { wrap.classList.remove('show'); return; }
+  wrap.classList.add('show');
+  for (var i = 0; i < stepScreens.length; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'step-dot' + (stepScreens[i] === current ? ' active' : '');
+    dot.onclick = (function(s) { return function() { goTo(s); }; })(stepScreens[i]);
+    wrap.appendChild(dot);
+  }
+}
+
+/* ---------------- COMPOSER (modal) ---------------- */
+function openComposer() {
+  document.getElementById('composerBackdrop').classList.add('show');
+  document.getElementById('cardText').value = '';
+  selectedIntensity = null;
+  var pills = document.querySelectorAll('#intensityRow .pill');
+  for (var i = 0; i < pills.length; i++) pills[i].classList.remove('selected');
+}
+function closeComposer() {
+  document.getElementById('composerBackdrop').classList.remove('show');
+}
+function selectIntensity(el) {
+  var pills = document.querySelectorAll('#intensityRow .pill');
+  for (var i = 0; i < pills.length; i++) pills[i].classList.remove('selected');
+  el.classList.add('selected');
+  selectedIntensity = el.getAttribute('data-val');
+}
+function addCardFromComposer() {
+  var text = document.getElementById('cardText').value.trim();
+  var stage = document.getElementById('cardStage').value;
+  if (!text) { alert('Add a line of text first.'); return; }
+  state.cards.push({ id: 'c' + state.nextId, stage: stage, text: text, intensity: selectedIntensity });
+  state.nextId++;
+  saveState();
+  closeComposer();
+  renderSpine();
+  updateBuildButton();
+}
+
+/* ---------------- TIMELINE / SPINE ---------------- */
+function renderSpine() {
+  var spine = document.getElementById('spine');
+  spine.innerHTML = '';
+  for (var i = 0; i < stages.length; i++) {
+    var stage = stages[i];
+    var col = document.createElement('div');
+    col.className = 'stage';
+    var node = document.createElement('div');
+    node.className = 'stage-node';
+    col.appendChild(node);
+    var lbl = document.createElement('div');
+    lbl.className = 'stage-label';
+    lbl.textContent = stage;
+    col.appendChild(lbl);
+    var cardsWrap = document.createElement('div');
+    cardsWrap.className = 'stage-cards';
+    var stageCards = state.cards.filter(function(c) { return c.stage === stage; });
+    for (var j = 0; j < stageCards.length; j++) {
+      var mc = document.createElement('div');
+      mc.className = 'mini-card';
+      mc.textContent = stageCards[j].text;
+      cardsWrap.appendChild(mc);
+    }
+    col.appendChild(cardsWrap);
+    spine.appendChild(col);
+  }
+}
+
+function updateBuildButton() {
+  var btn = document.getElementById('buildBtn');
+  var hint = document.getElementById('timelineHint');
+  btn.textContent = state.mapResult ? 'Rebuild map' : 'Build the map';
+  if (state.cards.length < 3) {
+    btn.disabled = true;
+    hint.textContent = 'Add at least a few memories before building the map.';
+  } else {
+    btn.disabled = false;
+    hint.textContent = state.mapResult ? 'You have new memories since your last map. Rebuild whenever you are ready.' : '';
+  }
+}
+
+/* ---------------- BUILD MAP (real AI call) ---------------- */
+function buildMap() {
+  var area = document.getElementById('canvasArea');
+  goTo(4);
+  area.innerHTML = '<div class="loading-box"><div class="spinner"></div><div>Reading through your timeline...</div></div>';
+
+  var cardList = state.cards.map(function(c) {
+    return { id: c.id, stage: c.stage, text: c.text, intensity: c.intensity || null };
+  });
+
+  var systemInstructions = "You are analysing a set of personal memory cards for a self-reflection tool called Pattern Timeline, part of The Attachment Code. " +
+    "Rules you must follow strictly: " +
+    "1. Only connect cards using the literal text provided, never introduce an interpretation the text does not support. " +
+    "2. Never invert a statement about someone else's behaviour into a statement about the user's character. " +
+    "3. Never use clinical or diagnostic language, never say the user 'has' an attachment style or wound. Name patterns as patterns, not conditions. " +
+    "4. Write at a 6th grade reading level, conversational, no therapy speak, no filler, no em dashes, use contractions. " +
+    "5. Every belief chain link must be traceable to specific cards. If a link in a chain is not well supported, mark it weak true. " +
+    "6. Respond with ONLY valid JSON, no preamble, no markdown fences, matching exactly this shape: " +
+    '{"threads":[{"label":"short pattern name","cardIds":["c1","c2"],"reasoning":"one sentence, plain, referencing what the cards actually say"}],' +
+    '"firstAppearances":[{"pattern":"First evidence of X","cardId":"c1","note":"optional short context"}],' +
+    '"beliefChains":{"0":[{"text":"belief statement","weak":false}]}}' +
+    " The beliefChains object keys must match the index of the thread in the threads array, as a string. Produce 2 to 4 threads if the cards support that many, fewer if they do not. Do not invent threads if there are not enough real connections.";
+
+  var userMessage = "Here are the memory cards:\n" + JSON.stringify(cardList);
+
+  fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-TAC-Email': memberEmail },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      messages: [
+        { role: 'user', content: systemInstructions + "\n\n" + userMessage }
+      ]
+    })
+  }).then(function(res) { return res.json(); })
+    .then(function(data) {
+      var raw = '';
+      if (data && data.content) {
+        for (var i = 0; i < data.content.length; i++) {
+          if (data.content[i].type === 'text') raw += data.content[i].text;
+        }
+      }
+      raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+      var parsed = JSON.parse(raw);
+      state.mapResult = parsed;
+      state.lastBuilt = new Date().toISOString();
+      saveState();
+      renderMapResult();
+      updateBuildButton();
+    })
+    .catch(function(err) {
+      area.innerHTML = '<div class="error-box">Something went wrong building the map. Your memories are safe and saved. Try tapping Rebuild map again in a moment.</div>';
+    });
+}
+
+/* ---------------- FAMILY TREE RENDER ---------------- */
+function cardById(id) {
+  for (var i = 0; i < state.cards.length; i++) if (state.cards[i].id === id) return state.cards[i];
+  return null;
+}
+
+function renderMapResult() {
+  var area = document.getElementById('canvasArea');
+  area.innerHTML = '';
+  if (!state.mapResult || !state.mapResult.threads || state.mapResult.threads.length === 0) {
+    area.innerHTML = '<div class="error-box">No clear threads yet. Add a few more memories and rebuild the map.</div>';
+    return;
+  }
+
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'thread-svg');
+  area.appendChild(svg);
+
+  var areaWidth = area.clientWidth || 760;
+  var treeSpacing = 190;
+  var totalHeight = state.mapResult.threads.length * treeSpacing + 60;
+  area.style.minHeight = totalHeight + 'px';
+  svg.setAttribute('height', totalHeight);
+
+  var ns = 'http://www.w3.org/2000/svg';
+
+  for (var t = 0; t < state.mapResult.threads.length; t++) {
+    var thread = state.mapResult.threads[t];
+    var labelY = t * treeSpacing + 30;
+    var childY = labelY + 90;
+    var labelX = areaWidth / 2;
+
+    var validCards = [];
+    for (var c = 0; c < thread.cardIds.length; c++) {
+      var cd = cardById(thread.cardIds[c]);
+      if (cd) validCards.push(cd);
+    }
+    if (validCards.length === 0) continue;
+
+    var spacing = Math.min(170, areaWidth / (validCards.length + 1));
+    var startX = (areaWidth - spacing * (validCards.length - 1)) / 2;
+
+    for (var v = 0; v < validCards.length; v++) {
+      var childX = validCards.length === 1 ? labelX : startX + v * spacing;
+      var path = document.createElementNS(ns, 'path');
+      var midY = (labelY + childY) / 2;
+      var d = 'M ' + labelX + ' ' + (labelY + 14) + ' C ' + labelX + ' ' + midY + ', ' + childX + ' ' + midY + ', ' + childX + ' ' + childY;
+      path.setAttribute('d', d);
+      path.setAttribute('stroke', t % 2 === 0 ? '#D4A898' : '#8C5C50');
+      path.setAttribute('stroke-width', '1.5');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('opacity', '0.65');
+      svg.appendChild(path);
+
+      var cardEl = document.createElement('div');
+      cardEl.className = 'tree-card';
+      cardEl.style.left = childX + 'px';
+      cardEl.style.top = childY + 'px';
+      var tag = document.createElement('span');
+      tag.className = 'tc-tag';
+      tag.textContent = validCards[v].stage;
+      cardEl.appendChild(tag);
+      cardEl.appendChild(document.createTextNode(validCards[v].text));
+      area.appendChild(cardEl);
+    }
+
+    var labelEl = document.createElement('div');
+    labelEl.className = 'tree-label';
+    labelEl.style.left = labelX + 'px';
+    labelEl.style.top = labelY + 'px';
+    labelEl.textContent = thread.label;
+    labelEl.onclick = (function(th) { return function() { showThreadReason(th); }; })(thread);
+    area.appendChild(labelEl);
+  }
+}
+
+function showThreadReason(thread) {
+  var box = document.getElementById('threadReason');
+  box.innerHTML = '<span class="label">' + thread.label + '</span>' + thread.reasoning;
+  box.classList.add('show');
+}
+
+/* ---------------- FIRST APPEARANCE ---------------- */
+function renderFirstAppearance() {
+  var list = document.getElementById('faList');
+  list.innerHTML = '';
+  if (!state.mapResult || !state.mapResult.firstAppearances) {
+    list.innerHTML = '<div class="error-box">Build the map first to see this.</div>';
+    return;
+  }
+  var entries = state.mapResult.firstAppearances;
+  for (var i = 0; i < entries.length; i++) {
+    var cd = cardById(entries[i].cardId);
+    if (!cd) continue;
+    var item = document.createElement('div');
+    item.className = 'fa-item';
+    var tag = document.createElement('div');
+    tag.className = 'fa-tag';
+    tag.textContent = entries[i].pattern;
+    var age = document.createElement('div');
+    age.className = 'fa-age';
+    age.textContent = cd.stage;
+    var quote = document.createElement('div');
+    quote.className = 'fa-quote display';
+    quote.textContent = '"' + cd.text + '"';
+    item.appendChild(tag);
+    item.appendChild(age);
+    item.appendChild(quote);
+    list.appendChild(item);
+  }
+}
+
+/* ---------------- DENSITY ---------------- */
+function renderDensity() {
+  var spine = document.getElementById('densitySpine');
+  spine.innerHTML = '';
+  var counts = { small: 1, medium: 2, big: 3 };
+  var totalByStage = [];
+  for (var i = 0; i < stages.length; i++) {
+    var stageCards = state.cards.filter(function(c) { return c.stage === stages[i]; });
+    var weight = 0;
+    for (var j = 0; j < stageCards.length; j++) weight += counts[stageCards[j].intensity] || 1;
+    totalByStage.push(weight);
+  }
+  var max = Math.max.apply(null, totalByStage.concat([1]));
+  var segWidth = 100 / stages.length;
+  for (var s = 0; s < stages.length; s++) {
+    var seg = document.createElement('div');
+    seg.className = 'density-segment';
+    seg.style.left = (s * segWidth) + '%';
+    seg.style.width = segWidth + '%';
+    var intensity = totalByStage[s] / max;
+    seg.style.background = 'rgba(140,92,80,' + (0.15 + intensity * 0.7) + ')';
+    spine.appendChild(seg);
+  }
+}
+
+/* ---------------- BELIEF EVOLUTION ---------------- */
+function renderThreadSelect() {
+  var wrap = document.getElementById('threadSelect');
+  wrap.innerHTML = '';
+  if (!state.mapResult || !state.mapResult.threads) return;
+  for (var i = 0; i < state.mapResult.threads.length; i++) {
+    var chip = document.createElement('div');
+    chip.className = 'thread-chip' + (i === 0 ? ' active' : '');
+    chip.textContent = state.mapResult.threads[i].label;
+    chip.onclick = (function(idx, el) { return function() {
+      var chips = document.querySelectorAll('.thread-chip');
+      for (var c = 0; c < chips.length; c++) chips[c].classList.remove('active');
+      el.classList.add('active');
+      renderBeliefChain(idx);
+    }; })(i, chip);
+    wrap.appendChild(chip);
+  }
+  renderBeliefChain(0);
+}
+
+function renderBeliefChain(idx) {
+  var wrap = document.getElementById('beliefChain');
+  wrap.innerHTML = '';
+  if (!state.mapResult.beliefChains) return;
+  var chain = state.mapResult.beliefChains[String(idx)];
+  if (!chain) { wrap.innerHTML = '<div class="error-box">No chain available for this thread.</div>'; return; }
+  for (var i = 0; i < chain.length; i++) {
+    var node = document.createElement('div');
+    node.className = 'belief-node' + (chain[i].weak ? ' weak' : '');
+    node.textContent = chain[i].text;
+    wrap.appendChild(node);
+    if (i < chain.length - 1) {
+      var arrow = document.createElement('div');
+      arrow.className = 'belief-arrow';
+      arrow.textContent = '\u2193';
+      wrap.appendChild(arrow);
+    }
+  }
+}
+
+/* ---------------- BREAK POINT ---------------- */
+function placeBreakPoint(e) {
+  var spine = document.getElementById('bpSpine');
+  var rect = spine.getBoundingClientRect();
+  var pct = ((e.clientX - rect.left) / rect.width) * 100;
+  if (pct < 0) pct = 0;
+  if (pct > 100) pct = 100;
+  var existing = spine.querySelector('.bp-marker');
+  if (existing) existing.remove();
+  var marker = document.createElement('div');
+  marker.className = 'bp-marker';
+  marker.style.left = pct + '%';
+  spine.appendChild(marker);
+  state.breakPoint = { position: pct, note: state.breakPoint ? state.breakPoint.note : '' };
+}
+function saveBreakPoint() {
+  var note = document.getElementById('bpNote').value.trim();
+  if (!state.breakPoint) state.breakPoint = { position: 50, note: note };
+  state.breakPoint.note = note;
+  saveState();
+}
+
+/* ---------------- DOWNLOAD ---------------- */
+function downloadMap() {
+  var canvas = document.createElement('canvas');
+  canvas.width = 900;
+  canvas.height = 700;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#1E1E20';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#D8CEC6';
+  ctx.font = '28px Georgia';
+  ctx.fillText('Pattern Timeline', 40, 50);
+  ctx.font = '14px Arial';
+  ctx.fillStyle = '#8A8078';
+  var dateStr = state.lastBuilt ? new Date(state.lastBuilt).toLocaleDateString() : '';
+  ctx.fillText('Built ' + dateStr, 40, 74);
+
+  var y = 120;
+  if (state.mapResult && state.mapResult.threads) {
+    for (var i = 0; i < state.mapResult.threads.length; i++) {
+      ctx.fillStyle = '#D4A898';
+      ctx.font = 'bold 18px Arial';
+      ctx.fillText(state.mapResult.threads[i].label, 40, y);
+      y += 26;
+      ctx.fillStyle = '#D8CEC6';
+      ctx.font = '13px Arial';
+      var reasoningLines = wrapText(ctx, state.mapResult.threads[i].reasoning, 800);
+      for (var l = 0; l < reasoningLines.length; l++) {
+        ctx.fillText(reasoningLines[l], 40, y);
+        y += 18;
+      }
+      y += 20;
+    }
+  }
+
+  var link = document.createElement('a');
+  link.download = 'pattern-timeline-' + Date.now() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function wrapText(ctx, text, maxWidth) {
+  var words = text.split(' ');
+  var lines = [];
+  var line = '';
+  for (var i = 0; i < words.length; i++) {
+    var test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && line !== '') {
+      lines.push(line);
+      line = words[i] + ' ';
+    } else {
+      line = test;
+    }
+  }
+  lines.push(line);
+  return lines;
+}
+
+/* ---------------- INIT ---------------- */
+tryAutoLogin();
+</script>
+</body>
+</html>
