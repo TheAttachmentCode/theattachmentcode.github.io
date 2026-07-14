@@ -199,6 +199,7 @@
     <div class="card">
       <p class="lead" style="margin-bottom:0;">21 questions. About 5 minutes. No right answers, just honest ones.</p>
     </div>
+    <div id="previousNote" class="hidden" style="text-align:center; font-size:12px; color:var(--grey); margin-bottom:1.25rem;"></div>
     <button class="btn" onclick="startQuiz()">Begin</button>
   </div>
 
@@ -245,6 +246,25 @@ function tacVerifyEmail(email, onResult){
 function showApp(){
   document.getElementById("appContent").classList.remove("hidden");
   document.getElementById("memberWall").classList.add("hidden");
+  checkPreviousCompletion();
+}
+
+function checkPreviousCompletion(){
+  var email = "";
+  try{ email = localStorage.getItem("tac-email") || ""; }catch(e){}
+  if(email === ""){ return; }
+  tacGetScores(email, function(data){
+    if(data && data.found){
+      var note = document.getElementById("previousNote");
+      var dateStr = "";
+      if(data.completedAt){
+        var d = new Date(data.completedAt);
+        dateStr = " on " + d.toLocaleDateString();
+      }
+      note.textContent = "You last took this assessment" + dateStr + ". Retaking it now will save a fresh result.";
+      note.classList.remove("hidden");
+    }
+  });
 }
 
 function showWall(){
@@ -290,7 +310,26 @@ function checkAccess(){
   });
 }
 
-// ---- QUIZ DATA ----
+function tacGetScores(email, onResult){
+  fetch(WORKER_URL + "/get-scores", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-TAC-Email": email }
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ onResult(data); })
+  .catch(function(){ onResult({ found: false }); });
+}
+
+function tacSaveScores(email, scores, primaryCritic, secondaryCritics, onDone){
+  fetch(WORKER_URL + "/save-scores", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-TAC-Email": email },
+    body: JSON.stringify({ scores: scores, primaryCritic: primaryCritic, secondaryCritics: secondaryCritics })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ if(onDone){ onDone(true); } })
+  .catch(function(){ if(onDone){ onDone(false); } });
+}
 // type keys: perfectionist, controller, taskmaster, underminer, destroyer, guilttripper, molder
 
 var TYPE_INFO = {
@@ -493,6 +532,14 @@ function showResults(){
       "<div class='bar-track'><div class='bar-fill' style='width:" + item.pct + "%;'></div></div>" +
       "<div class='bar-desc'>" + info.desc + "</div>";
     container.appendChild(row);
+  }
+
+  var storedEmail = "";
+  try{ storedEmail = localStorage.getItem("tac-email") || ""; }catch(e){}
+  if(storedEmail !== ""){
+    var primaryCritic = sortable[0].key;
+    var secondaryCritics = [sortable[1].key, sortable[2].key];
+    tacSaveScores(storedEmail, finalScores, primaryCritic, secondaryCritics, function(success){});
   }
 }
 
