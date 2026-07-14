@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting to Know Your Inner Critic | The Attachment Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1E1E20;
+    --card:#272729;
+    --rose:#C49080;
+    --rose-light:#D4A898;
+    --rose-dark:#8C5C50;
+    --cream:#D8CEC6;
+    --grey:#8A8078;
+    --border:#3A3A3C;
+    --textarea-bg:#303032;
+    --placeholder:#6E6560;
+    --gradient: linear-gradient(135deg, #8C5C50 0%, #D4A898 35%, #D4A898 55%, #8C5C50 100%);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'DM Sans', sans-serif;
+    font-weight:300;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:560px; margin:0 auto; padding:2rem 1.25rem 4rem; }
+
+  .brand{ text-align:center; margin-bottom:2rem; }
+  .brand-name{ font-family:'Cormorant Garamond', serif; font-weight:300; font-size:22px; letter-spacing:0.12em; color:var(--cream); }
+  .brand-sub{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--rose); margin-top:6px; font-weight:500; }
+
+  .orn{ display:flex; align-items:center; justify-content:center; gap:10px; margin:1.75rem 0; }
+  .orn-line{ height:1px; width:60px; }
+  .orn-line.l{ background:linear-gradient(90deg, transparent, var(--rose)); }
+  .orn-line.r{ background:linear-gradient(90deg, var(--rose), transparent); }
+  .orn-dia{ width:6px; height:6px; background:var(--rose); transform:rotate(45deg); }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem;
+    margin-bottom:1.25rem;
+  }
+
+  h1{ font-family:'Cormorant Garamond', serif; font-weight:300; font-size:1.9rem; line-height:1.3; text-align:center; margin-bottom:1rem; }
+  h1 .accent{
+    background:var(--gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  p.lead{ font-size:14px; line-height:1.85; color:var(--grey); text-align:center; margin-bottom:1.5rem; }
+
+  .btn{
+    display:block;
+    width:100%;
+    background:var(--gradient);
+    color:var(--bg);
+    border:none;
+    border-radius:10px;
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:16px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .btn.ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--grey);
+  }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .btn-row{ display:flex; gap:10px; }
+  .btn-row .btn{ flex:1; }
+
+  .progress-track{
+    position:sticky; top:0; z-index:10;
+    height:3px;
+    background:var(--border);
+    margin-bottom:2rem;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, #8C5C50, #D4A898);
+    width:0%;
+  }
+
+  .step-label{ font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:var(--rose); font-weight:500; margin-bottom:0.75rem; text-align:center; }
+  .step-title{ font-family:'Cormorant Garamond', serif; font-weight:400; font-size:1.5rem; text-align:center; margin-bottom:0.75rem; }
+  .step-prompt{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.15rem; line-height:1.7; text-align:center; margin-bottom:1.5rem; color:var(--cream); }
+  .step-help{ font-size:13px; line-height:1.7; color:var(--grey); text-align:center; margin-bottom:1.5rem; }
+
+  .critic-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.5rem; }
+  .critic-btn{
+    background:var(--textarea-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    padding:16px 10px;
+    font-family:'Cormorant Garamond', serif;
+    font-size:1rem;
+    cursor:pointer;
+    text-align:center;
+  }
+  .critic-btn.selected{
+    background:linear-gradient(135deg, rgba(140,92,80,0.35), rgba(196,144,128,0.2));
+    border-color:var(--rose);
+  }
+
+  textarea{
+    width:100%;
+    background:rgba(30,30,32,0.8);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:14px;
+    line-height:1.75;
+    padding:14px;
+    min-height:120px;
+    resize:vertical;
+    margin-bottom:1.5rem;
+  }
+  textarea::placeholder{ color:var(--placeholder); }
+  textarea:focus{
+    outline:none;
+    border-color:var(--rose);
+    box-shadow:0 0 0 3px rgba(196,144,128,0.1);
+  }
+
+  .summary-block{ margin-bottom:1.25rem; }
+  .summary-label{ font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--rose); font-weight:500; margin-bottom:6px; }
+  .summary-text{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1rem; line-height:1.75; color:var(--cream); }
+
+  .wall{ text-align:center; padding-top:4rem; }
+  .wall input{
+    width:100%;
+    background:var(--textarea-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--cream);
+    padding:14px;
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    margin-bottom:1rem;
+    text-align:center;
+  }
+  .wall input::placeholder{ color:var(--placeholder); }
+
+  .loading{ text-align:center; font-size:13px; color:var(--grey); padding:1rem 0; }
+  .deeper-text{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.05rem; line-height:1.8; color:var(--cream); }
+
+  .hidden{ display:none; }
+  a.link{ color:var(--rose); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div id="memberWall" class="wrap wall hidden">
+  <div class="brand">
+    <div class="brand-name">THE ATTACHMENT CODE</div>
+  </div>
+  <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+  <h1>This tool is for <span class="accent">members</span></h1>
+  <p class="lead">Enter your member email to begin.</p>
+  <input type="email" id="gateInput" placeholder="Enter your member email" autocomplete="off" />
+  <button class="btn" id="gateBtn" onclick="checkGate()">Enter</button>
+  <div id="gateErr" style="font-size:12px; color:#8C5C50; margin-top:0.75rem;"></div>
+  <p class="lead" style="margin-top:1.5rem;">Not a member yet? <a class="link" href="https://skool.com/the-attachment-code" target="_blank">Join The Attachment Code</a></p>
+</div>
+
+<div id="appContent" class="wrap hidden">
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="brand">
+    <div class="brand-name">THE ATTACHMENT CODE</div>
+    <div class="brand-sub">Getting to Know Your Inner Critic</div>
+  </div>
+
+  <!-- STEP 0: START -->
+  <div id="step0">
+    <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+    <h1>Get curious, <span class="accent">not combative</span></h1>
+    <p class="lead">Most of us either ignore our Inner Critic, argue with it, or try to silence it. None of that really works. This exercise takes a different approach: getting to know what it's actually trying to do for you.</p>
+    <div class="card">
+      <p class="lead" style="margin-bottom:0;">Underneath the harsh voice is almost always a part trying to protect you from something. This won't take long, and there's no right way to answer.</p>
+    </div>
+    <button class="btn" onclick="goToStep(1)">Begin</button>
+  </div>
+
+  <!-- STEP 1: CHOOSE CRITIC -->
+  <div id="step1" class="hidden">
+    <div class="step-label">Step 1 of 7</div>
+    <div class="step-title">Which Critic are you working with today?</div>
+    <p class="step-help">If you've taken the Inner Critic quiz, pick whichever one felt strongest. If not, pick the one whose voice you hear most often.</p>
+    <div id="suggestedNote" class="hidden" style="text-align:center; font-size:12px; color:var(--rose); margin-bottom:1rem;"></div>
+    <div class="critic-grid" id="criticGrid"></div>
+    <button class="btn" id="step1Next" onclick="goToStep(2)" disabled>Continue</button>
+  </div>
+
+  <!-- STEP 2: NOTICE THE PATTERN -->
+  <div id="step2" class="hidden">
+    <div class="step-label">Step 2 of 7</div>
+    <div class="step-title">Notice the pattern</div>
+    <div class="step-prompt">When does this Critic show up, and what does it say?</div>
+    <textarea id="answerPattern" placeholder="Think of a recent moment. What was happening? What did the voice in your head say to you?"></textarea>
+    <button class="btn" onclick="goToStep(3)">Continue</button>
+  </div>
+
+  <!-- STEP 3: POSITIVE INTENT -->
+  <div id="step3" class="hidden">
+    <div class="step-label">Step 3 of 7</div>
+    <div class="step-title">Its positive intent</div>
+    <div class="step-prompt">What is it trying to accomplish by judging or pushing you?</div>
+    <p class="step-help">Even harsh voices usually believe they're helping. Ask it directly: what are you trying to do for me?</p>
+    <textarea id="answerIntent" placeholder="Write whatever comes up, even if it feels strange to answer."></textarea>
+    <button class="btn" onclick="goToStep(4)">Continue</button>
+  </div>
+
+  <!-- STEP 4: ITS FEAR -->
+  <div id="step4" class="hidden">
+    <div class="step-label">Step 4 of 7</div>
+    <div class="step-title">Its fear</div>
+    <div class="step-prompt">What is it afraid would happen if it stopped?</div>
+    <p class="step-help">Critics rarely let go easily. That's usually because they believe something bad will happen without them.</p>
+    <textarea id="answerFear" placeholder="What does it think would go wrong if it eased up on you?"></textarea>
+    <button class="btn" onclick="goToStep(5)">Continue</button>
+  </div>
+
+  <!-- STEP 5: WHAT IT'S PROTECTING -->
+  <div id="step5" class="hidden">
+    <div class="step-label">Step 5 of 7</div>
+    <div class="step-title">What it's protecting you from</div>
+    <div class="step-prompt">What pain, rejection, or shame is it trying to shield you from?</div>
+    <textarea id="answerProtect" placeholder="Underneath the criticism, what is it actually trying to keep you safe from?"></textarea>
+    <button class="btn" onclick="goToStep(6)">Continue</button>
+  </div>
+
+  <!-- STEP 6: YOUR RESPONSE -->
+  <div id="step6" class="hidden">
+    <div class="step-label">Step 6 of 7</div>
+    <div class="step-title">Your response</div>
+    <div class="step-prompt">Write something back to it, acknowledging what it's been trying to do.</div>
+    <p class="step-help">You don't have to agree with how it talks to you. You can appreciate the effort while asking for something different.</p>
+    <textarea id="answerResponse" placeholder="For example: I see you've been trying to protect me. I want to find a gentler way to do that together."></textarea>
+    <button class="btn" onclick="finishExercise()">See My Summary</button>
+  </div>
+
+  <!-- STEP 7: SUMMARY -->
+  <div id="step7" class="hidden">
+    <div class="orn"><div class="orn-line l"></div><div class="orn-dia"></div><div class="orn-line r"></div></div>
+    <h1>What you've <span class="accent">learned</span></h1>
+    <div class="card" id="summaryCard"></div>
+
+    <div class="card">
+      <p class="lead" style="margin-bottom:1rem;">Want a reflection pulling this together?</p>
+      <button class="btn ghost" id="deeperBtn" onclick="goDeeper()">Go Deeper</button>
+      <div id="deeperOutput" style="margin-top:1rem;"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" onclick="downloadSummary()">Download</button>
+      <button class="btn ghost" onclick="restartExercise()">Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+var WORKER_URL = "https://wispy-dust-5244.djmisschief.workers.dev";
+var TOTAL_STEPS = 7;
+
+var CRITIC_TYPES = [
+  "The Perfectionist",
+  "The Inner Controller",
+  "The Taskmaster",
+  "The Underminer",
+  "The Destroyer",
+  "The Guilt Tripper",
+  "The Molder"
+];
+
+var selectedCritic = "";
+
+function tacVerifyEmail(email, onResult){
+  fetch(WORKER_URL + "/check-access", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ onResult(!!data.active); })
+  .catch(function(){ onResult(false); });
+}
+
+var KEY_TO_NAME = {
+  perfectionist: "The Perfectionist",
+  controller: "The Inner Controller",
+  taskmaster: "The Taskmaster",
+  underminer: "The Underminer",
+  destroyer: "The Destroyer",
+  guilttripper: "The Guilt Tripper",
+  molder: "The Molder"
+};
+
+function showApp(){
+  document.getElementById("appContent").classList.remove("hidden");
+  document.getElementById("memberWall").classList.add("hidden");
+  checkSuggestedCritic();
+}
+
+function checkSuggestedCritic(){
+  var email = "";
+  try{ email = localStorage.getItem("tac-email") || ""; }catch(e){}
+  if(email === ""){ return; }
+  tacGetScores(email, function(data){
+    if(data && data.found && data.primaryCritic){
+      var name = KEY_TO_NAME[data.primaryCritic];
+      if(!name){ return; }
+      var note = document.getElementById("suggestedNote");
+      note.textContent = "Your quiz results suggested " + name + " as your strongest pattern.";
+      note.classList.remove("hidden");
+      var buttons = document.querySelectorAll(".critic-btn");
+      for(var i = 0; i < buttons.length; i++){
+        if(buttons[i].textContent === name){
+          selectCritic(name, buttons[i]);
+        }
+      }
+    }
+  });
+}
+
+function showWall(){
+  document.getElementById("memberWall").classList.remove("hidden");
+  document.getElementById("appContent").classList.add("hidden");
+}
+
+function checkGate(){
+  var input = document.getElementById("gateInput");
+  var btn = document.getElementById("gateBtn");
+  var errEl = document.getElementById("gateErr");
+  var val = input.value.trim().toLowerCase();
+  if(!val || val.indexOf("@") === -1){
+    errEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+  errEl.textContent = "";
+  if(btn){ btn.textContent = "Checking..."; }
+  tacVerifyEmail(val, function(active){
+    if(btn){ btn.textContent = "Enter"; }
+    if(active){
+      try{ localStorage.setItem("tac-email", val); }catch(e){}
+      showApp();
+    } else {
+      errEl.textContent = "That email isn't showing as an active member. Please try again.";
+    }
+  });
+}
+
+function checkAccess(){
+  var stored = null;
+  try{ stored = localStorage.getItem("tac-email"); }catch(e){}
+  if(!stored){
+    showWall();
+    return;
+  }
+  tacVerifyEmail(stored, function(active){
+    if(active){
+      showApp();
+    } else {
+      showWall();
+    }
+  });
+}
+
+function tacGetScores(email, onResult){
+  fetch(WORKER_URL + "/get-scores", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-TAC-Email": email }
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){ onResult(data); })
+  .catch(function(){ onResult({ found: false }); });
+}
+
+function buildCriticGrid(){
+  var grid = document.getElementById("criticGrid");
+  grid.innerHTML = "";
+  for(var i = 0; i < CRITIC_TYPES.length; i++){
+    var b = document.createElement("button");
+    b.className = "critic-btn";
+    b.textContent = CRITIC_TYPES[i];
+    b.onclick = (function(name, el){
+      return function(){ selectCritic(name, el); };
+    })(CRITIC_TYPES[i], b);
+    grid.appendChild(b);
+  }
+}
+
+function selectCritic(name, el){
+  selectedCritic = name;
+  var buttons = document.querySelectorAll(".critic-btn");
+  for(var i = 0; i < buttons.length; i++){ buttons[i].classList.remove("selected"); }
+  el.classList.add("selected");
+  document.getElementById("step1Next").disabled = false;
+}
+
+function goToStep(n){
+  for(var i = 0; i <= TOTAL_STEPS; i++){
+    var el = document.getElementById("step" + i);
+    if(el){ el.classList.add("hidden"); }
+  }
+  document.getElementById("step" + n).classList.remove("hidden");
+  document.getElementById("progressFill").style.width = Math.round((n / TOTAL_STEPS) * 100) + "%";
+  window.scrollTo(0, 0);
+}
+
+function finishExercise(){
+  var summary = document.getElementById("summaryCard");
+  var pattern = document.getElementById("answerPattern").value || "(not answered)";
+  var intent = document.getElementById("answerIntent").value || "(not answered)";
+  var fear = document.getElementById("answerFear").value || "(not answered)";
+  var protect = document.getElementById("answerProtect").value || "(not answered)";
+  var response = document.getElementById("answerResponse").value || "(not answered)";
+
+  summary.innerHTML =
+    "<div class='summary-block'><div class='summary-label'>Working with</div><div class='summary-text'>" + selectedCritic + "</div></div>" +
+    "<div class='summary-block'><div class='summary-label'>The pattern</div><div class='summary-text'>" + pattern + "</div></div>" +
+    "<div class='summary-block'><div class='summary-label'>Its positive intent</div><div class='summary-text'>" + intent + "</div></div>" +
+    "<div class='summary-block'><div class='summary-label'>Its fear</div><div class='summary-text'>" + fear + "</div></div>" +
+    "<div class='summary-block'><div class='summary-label'>What it's protecting</div><div class='summary-text'>" + protect + "</div></div>" +
+    "<div class='summary-block' style='margin-bottom:0;'><div class='summary-label'>Your response</div><div class='summary-text'>" + response + "</div></div>";
+
+  goToStep(7);
+}
+
+function goDeeper(){
+  var btn = document.getElementById("deeperBtn");
+  var output = document.getElementById("deeperOutput");
+  btn.classList.add("hidden");
+  output.innerHTML = "<div class='loading'>Reading your reflection...</div>";
+
+  var pattern = document.getElementById("answerPattern").value || "";
+  var intent = document.getElementById("answerIntent").value || "";
+  var fear = document.getElementById("answerFear").value || "";
+  var protect = document.getElementById("answerProtect").value || "";
+  var response = document.getElementById("answerResponse").value || "";
+
+  var systemPrompt = "You are a perceptive friend who tells the truth without performing it. Write in plain, 6th grade language. Do not use em dashes. No therapy speak, no AI filler phrases. Do not invert or embellish what the person wrote, only reflect back what is actually there. Keep it to 100 to 150 words. End with one grounded, non-generic observation, not advice or a call to action.";
+  var userPrompt = "I am working with my Inner Critic called " + selectedCritic + ". Here is what I wrote. The pattern of when it shows up: " + pattern + ". What it's trying to accomplish: " + intent + ". What it's afraid would happen if it stopped: " + fear + ". What it's protecting me from: " + protect + ". My response to it: " + response + ". Write a short reflection on what this reveals about my relationship with this part of myself.";
+
+  var storedEmail = "";
+  try{ storedEmail = localStorage.getItem("tac-email") || ""; }catch(e){}
+
+  fetch(WORKER_URL + "/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-TAC-Email": storedEmail },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 400,
+      system: systemPrompt,
+      messages: [
+        { role: "user", content: userPrompt }
+      ]
+    })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    var text = "";
+    if(data && data.content){
+      for(var i = 0; i < data.content.length; i++){
+        if(data.content[i].type === "text"){
+          text = text + data.content[i].text;
+        }
+      }
+    }
+    if(text === ""){
+      text = "Your reflection couldn't load right now. What you've written above still stands on its own.";
+    }
+    output.innerHTML = "<div class='deeper-text'>" + text + "</div>";
+  })
+  .catch(function(err){
+    output.innerHTML = "<div class='loading'>Your reflection couldn't load right now. What you've written above still stands on its own.</div>";
+  });
+}
+
+function downloadSummary(){
+  var pattern = document.getElementById("answerPattern").value || "(not answered)";
+  var intent = document.getElementById("answerIntent").value || "(not answered)";
+  var fear = document.getElementById("answerFear").value || "(not answered)";
+  var protect = document.getElementById("answerProtect").value || "(not answered)";
+  var response = document.getElementById("answerResponse").value || "(not answered)";
+  var deeperEl = document.querySelector("#deeperOutput .deeper-text");
+  var deeperText = deeperEl ? deeperEl.textContent : "";
+
+  var content = "THE ATTACHMENT CODE\nGetting to Know Your Inner Critic\n\n";
+  content = content + "Working with: " + selectedCritic + "\n\n";
+  content = content + "The pattern:\n" + pattern + "\n\n";
+  content = content + "Its positive intent:\n" + intent + "\n\n";
+  content = content + "Its fear:\n" + fear + "\n\n";
+  content = content + "What it's protecting:\n" + protect + "\n\n";
+  content = content + "Your response:\n" + response + "\n\n";
+  if(deeperText !== ""){
+    content = content + "Reflection:\n" + deeperText + "\n";
+  }
+
+  var blob = new Blob([content], { type: "text/plain" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "inner-critic-reflection.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function restartExercise(){
+  selectedCritic = "";
+  document.getElementById("answerPattern").value = "";
+  document.getElementById("answerIntent").value = "";
+  document.getElementById("answerFear").value = "";
+  document.getElementById("answerProtect").value = "";
+  document.getElementById("answerResponse").value = "";
+  document.getElementById("deeperOutput").innerHTML = "";
+  document.getElementById("deeperBtn").classList.remove("hidden");
+  document.getElementById("step1Next").disabled = true;
+  var buttons = document.querySelectorAll(".critic-btn");
+  for(var i = 0; i < buttons.length; i++){ buttons[i].classList.remove("selected"); }
+  goToStep(0);
+}
+
+document.getElementById("gateInput").addEventListener("keydown", function(e){ if(e.key === "Enter") checkGate(); });
+
+buildCriticGrid();
+checkAccess();
+
+</script>
+
+</body>
+</html>
