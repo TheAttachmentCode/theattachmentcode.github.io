@@ -85,10 +85,10 @@
   /* Threads / family tree */
   .map-title { font-size: 22px; margin: 0 0 4px 0; }
   .map-sub { color: var(--placeholder); font-size: 13px; margin: 0 0 18px 0; }
-  .canvas-area { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; min-height: 300px; overflow: visible; }
+  .canvas-area { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; min-height: 300px; overflow-x: auto; overflow-y: visible; }
   svg.thread-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
   .tree-label { position: absolute; background: var(--bg); border: 1px solid var(--rose-dark); color: var(--rose-light); font-size: 11.5px; padding: 6px 14px; border-radius: 14px; z-index: 3; cursor: pointer; white-space: nowrap; transform: translateX(-50%); font-weight: 600; }
-  .tree-card { position: absolute; width: 140px; background: var(--input); border: 1px solid var(--border); border-radius: 8px; padding: 9px; font-size: 10.5px; line-height: 1.3; z-index: 2; transform: translateX(-50%); }
+  .tree-card { position: absolute; width: 190px; background: var(--input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11.5px; line-height: 1.45; z-index: 2; transform: translateX(-50%); }
   .tree-card .tc-tag { font-size: 8.5px; color: var(--rose-light); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; display: block; }
   .thread-reason { margin-top: 16px; background: var(--card); border: 1px solid var(--rose-dark); border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.5; display: none; }
   .thread-reason.show { display: block; }
@@ -156,7 +156,7 @@
   <div class="screen active" data-screen="1">
     <div class="s1">
       <h1 class="display">The story your nervous system<br>wrote to keep you safe.</h1>
-      <button class="btn" onclick="goTo(2)">Start building</button>
+      <button class="btn" onclick="goTo(state.mapResult ? 4 : 2)">Start building</button>
     </div>
   </div>
 
@@ -319,7 +319,7 @@ function showApp() {
   document.getElementById('lockWrap').style.display = 'none';
   document.getElementById('app').classList.add('show');
   renderSpine();
-  goTo(state.mapResult ? 4 : 2);
+  goTo(1);
   if (state.mapResult) renderMapResult();
 }
 
@@ -534,18 +534,18 @@ function renderMapResult() {
   svg.setAttribute('class', 'thread-svg');
   area.appendChild(svg);
 
-  var areaWidth = area.clientWidth || 760;
-  var treeSpacing = 190;
-  var totalHeight = state.mapResult.threads.length * treeSpacing + 60;
-  area.style.minHeight = totalHeight + 'px';
-  svg.setAttribute('height', totalHeight);
-
+  var cardWidth = 190;
+  var minColumnGap = 40;
+  var areaWidth = Math.max(area.clientWidth || 760, 760);
   var ns = 'http://www.w3.org/2000/svg';
+  var currentY = 30;
+  var labelToCardGap = 130;
+  var treeBottomBuffer = 80;
 
   for (var t = 0; t < state.mapResult.threads.length; t++) {
     var thread = state.mapResult.threads[t];
-    var labelY = t * treeSpacing + 30;
-    var childY = labelY + 90;
+    var labelY = currentY;
+    var childY = labelY + labelToCardGap;
     var labelX = areaWidth / 2;
 
     var validCards = [];
@@ -555,20 +555,17 @@ function renderMapResult() {
     }
     if (validCards.length === 0) continue;
 
-    var spacing = Math.min(170, areaWidth / (validCards.length + 1));
-    var startX = (areaWidth - spacing * (validCards.length - 1)) / 2;
+    var spacing = Math.max(cardWidth + minColumnGap, Math.min(cardWidth + 90, areaWidth / (validCards.length + 0.5)));
+    var rowWidth = spacing * (validCards.length - 1);
+    var startX = (areaWidth - rowWidth) / 2;
+    startX = Math.max(startX, cardWidth / 2 + 10);
+
+    var cardEls = [];
+    var childXs = [];
 
     for (var v = 0; v < validCards.length; v++) {
       var childX = validCards.length === 1 ? labelX : startX + v * spacing;
-      var path = document.createElementNS(ns, 'path');
-      var midY = (labelY + childY) / 2;
-      var d = 'M ' + labelX + ' ' + (labelY + 14) + ' C ' + labelX + ' ' + midY + ', ' + childX + ' ' + midY + ', ' + childX + ' ' + childY;
-      path.setAttribute('d', d);
-      path.setAttribute('stroke', t % 2 === 0 ? '#D4A898' : '#8C5C50');
-      path.setAttribute('stroke-width', '1.5');
-      path.setAttribute('fill', 'none');
-      path.setAttribute('opacity', '0.65');
-      svg.appendChild(path);
+      childXs.push(childX);
 
       var cardEl = document.createElement('div');
       cardEl.className = 'tree-card';
@@ -580,6 +577,7 @@ function renderMapResult() {
       cardEl.appendChild(tag);
       cardEl.appendChild(document.createTextNode(validCards[v].text));
       area.appendChild(cardEl);
+      cardEls.push(cardEl);
     }
 
     var labelEl = document.createElement('div');
@@ -589,7 +587,33 @@ function renderMapResult() {
     labelEl.textContent = thread.label;
     labelEl.onclick = (function(th) { return function() { showThreadReason(th); }; })(thread);
     area.appendChild(labelEl);
+
+    for (var p = 0; p < cardEls.length; p++) {
+      var childX2 = childXs[p];
+      var path = document.createElementNS(ns, 'path');
+      var midY = (labelY + childY) / 2;
+      var d = 'M ' + labelX + ' ' + (labelY + 14) + ' C ' + labelX + ' ' + midY + ', ' + childX2 + ' ' + midY + ', ' + childX2 + ' ' + childY;
+      path.setAttribute('d', d);
+      path.setAttribute('stroke', t % 2 === 0 ? '#D4A898' : '#8C5C50');
+      path.setAttribute('stroke-width', '1.5');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('opacity', '0.65');
+      svg.appendChild(path);
+    }
+
+    var maxCardHeight = 0;
+    for (var h = 0; h < cardEls.length; h++) {
+      var ch = cardEls[h].getBoundingClientRect().height;
+      if (ch > maxCardHeight) maxCardHeight = ch;
+    }
+
+    currentY = childY + maxCardHeight + treeBottomBuffer;
   }
+
+  var totalHeight = currentY + 20;
+  area.style.minHeight = totalHeight + 'px';
+  svg.setAttribute('width', areaWidth);
+  svg.setAttribute('height', totalHeight);
 }
 
 function showThreadReason(thread) {
