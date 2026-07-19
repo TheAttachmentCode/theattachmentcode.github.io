@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Attachment Code — The Relationship Audit</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1E1E20;
+  --card:#272729;
+  --card2:#303032;
+  --rose:#C49080;
+  --rose-lt:#D4A898;
+  --rose-dk:#8C5C50;
+  --cream:#D8CEC6;
+  --cream-dim:rgba(216,206,198,0.75);
+  --grey:#8A8078;
+  --border:#3A3A3C;
+  --metal:linear-gradient(135deg,#8C5C50 0%,#D4A898 35%,#D4A898 55%,#8C5C50 100%);
+  --font-d:'Cormorant Garamond',Georgia,serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --r:8px;--r-lg:12px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-b);
+  background:var(--bg);
+  color:var(--cream);
+  min-height:100vh;
+  font-size:14px;
+  line-height:1.6;
+}
+.wrap{max-width:860px;margin:0 auto;padding-bottom:6rem}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:2.5rem 1.5rem 2rem;border-bottom:1px solid var(--border)}
+.divider{display:flex;align-items:center;justify-content:center;gap:.75rem;margin:.85rem 0}
+.divider-line{width:60px;height:1px;background:var(--metal);opacity:.4}
+.divider-diamond{width:6px;height:6px;background:var(--rose);transform:rotate(45deg)}
+.brand-sup{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.4rem}
+.brand{font-family:var(--font-d);font-size:2rem;font-weight:300;background:var(--metal);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:.3rem}
+.tool-name{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--grey);margin-bottom:.6rem}
+.hero-sub{font-size:13px;color:var(--grey);max-width:520px;margin:0 auto;line-height:1.8;font-family:var(--font-d);font-style:italic}
+
+/* ── Progress ── */
+.tab-progress{display:flex;gap:0;height:3px;background:var(--border);position:sticky;top:0;z-index:100}
+.tab-seg{flex:1;height:100%;background:var(--border);transition:background .5s}
+.tab-seg.done{background:var(--rose-dk)}
+.tab-seg.active{background:var(--metal)}
+
+/* ── Tabs ── */
+.tabs-row{display:flex;gap:6px;margin-bottom:1.5rem;background:var(--card);border-radius:10px;padding:6px;border:1px solid var(--border);position:sticky;top:3px;z-index:99;overflow-x:auto}
+.tabs-row::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;background:transparent;border:none;cursor:pointer;padding:8px 6px;border-radius:6px;transition:all .2s;font-family:var(--font-b);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;color:var(--grey);white-space:nowrap;opacity:.45}
+.tab-btn:hover{color:var(--cream);background:rgba(196,144,128,.08);opacity:1}
+.tab-btn.active{background:var(--card2);color:var(--rose-lt);box-shadow:0 1px 4px rgba(0,0,0,.3);opacity:1}
+.tab-btn.completed{opacity:1}
+.tab-btn.completed::after{content:'✓';margin-left:5px;font-size:9px;color:var(--rose)}
+.tab-content{display:none;padding:2.5rem 1.5rem;animation:fadeIn .35s ease}
+.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.card2{background:var(--card2);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1rem}
+.section-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);font-weight:500;display:block;margin-bottom:.75rem}
+
+/* ── Reality Check ── */
+.reality-check{background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--rose);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.reality-check p{font-family:var(--font-d);font-size:1rem;font-style:italic;color:var(--cream-dim);line-height:1.8}
+
+/* ── Dropdowns ── */
+.select-group{margin-bottom:1.25rem}
+.select-group label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.5rem}
+.select-group select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);color:var(--cream);font-family:var(--font-b);font-size:13px;padding:.65rem .9rem;appearance:none;-webkit-appearance:none;cursor:pointer;outline:none;transition:border-color .2s}
+.select-group select:focus{border-color:var(--rose)}
+.select-group select option{background:var(--card2);color:var(--cream)}
+
+/* ── Multi-select Pills ── */
+.pills-group{margin-bottom:1.5rem}
+.pills-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.75rem;display:block}
+.pills-sublabel{font-size:12px;color:var(--grey);margin-bottom:.75rem;display:block;font-style:italic}
+.pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{background:transparent;border:1px solid var(--border);border-radius:20px;padding:.45rem .9rem;font-size:12.5px;color:var(--cream-dim);cursor:pointer;transition:all .2s;font-family:var(--font-b);line-height:1.4;text-align:left}
+.pill:hover{border-color:var(--rose);color:var(--cream);background:rgba(196,144,128,.06)}
+.pill.selected{border-color:var(--rose-dk);background:rgba(140,92,80,.15);color:var(--rose-lt)}
+
+/* ── Question blocks ── */
+.q-block{margin-bottom:2rem}
+.q-number{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose-dk);font-weight:500;margin-bottom:.35rem;display:block}
+.q-text{font-family:var(--font-d);font-size:1.2rem;font-weight:400;color:var(--cream-dim);line-height:1.6;margin-bottom:.3rem}
+.q-sub{font-size:12px;color:var(--grey);font-style:italic;margin-bottom:.9rem;display:block}
+.q-category{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--grey);font-weight:500;margin:.75rem 0 .5rem;display:flex;align-items:center;justify-content:space-between}
+.select-all-btn{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);background:transparent;border:none;cursor:pointer;font-family:var(--font-b);padding:0;font-weight:500;opacity:.7}
+.select-all-btn:hover{opacity:1}
+
+/* ── Textarea / voice ── */
+.voice-wrap{position:relative;margin-bottom:1rem}
+.voice-textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);color:var(--cream);font-family:var(--font-b);font-size:13px;padding:.75rem 3rem .75rem .9rem;min-height:100px;resize:vertical;outline:none;line-height:1.7;transition:border-color .2s}
+.voice-textarea:focus{border-color:var(--rose)}
+.voice-textarea::placeholder{color:var(--grey)}
+.mic-btn{position:absolute;top:.65rem;right:.65rem;background:transparent;border:1px solid var(--border);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--grey)}
+.mic-btn:hover{border-color:var(--rose);color:var(--rose)}
+.mic-btn.listening{border-color:var(--rose);color:var(--rose);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:var(--r);font-family:var(--font-b);font-size:12px;letter-spacing:1px;font-weight:500;text-transform:uppercase;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:transparent;color:var(--cream-dim)}
+.btn:hover{border-color:var(--rose);color:var(--rose-lt)}
+.btn-rose{background:var(--metal);border:none;color:#1E1E20;font-weight:600}
+.btn-rose:hover{opacity:.88;color:#1E1E20}
+.btn-group{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
+.btn-danger{border-color:#6B3232;color:#B87070}
+.btn-danger:hover{border-color:#B87070;color:#E07070}
+
+/* ── AI output ── */
+.ai-loading{text-align:center;padding:2.5rem;color:var(--grey)}
+.ai-loading-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin:0 3px;animation:dot-bounce .9s infinite}
+.ai-loading-dot:nth-child(2){animation-delay:.2s}
+.ai-loading-dot:nth-child(3){animation-delay:.4s}
+@keyframes dot-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ai-output{font-family:var(--font-d);font-size:1rem;font-weight:300;color:var(--cream-dim);line-height:1.9}
+.ai-output h3{font-family:var(--font-b);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-weight:500;margin:1.5rem 0 .5rem}
+.ai-output p{margin-bottom:1rem}
+.ai-output p:last-child{margin-bottom:0}
+
+/* ── Save/Download bar ── */
+.action-bar{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.action-bar .saved-msg{font-size:11px;color:var(--rose);align-self:center;opacity:0;transition:opacity .3s}
+.action-bar .saved-msg.show{opacity:1}
+
+/* ── Transition card ── */
+.transition-card{background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--rose);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1.25rem 1.5rem;margin:1.5rem 0}
+.transition-card p{font-family:var(--font-d);font-size:1.05rem;font-style:italic;color:var(--rose-lt);line-height:1.8}
+
+/* ── Honesty mirror ── */
+.honesty-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:1.5rem}
+.honesty-card .q-text{color:var(--cream-dim)}
+
+
+.audit-entry{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:.75rem;overflow:hidden}
+.audit-entry-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer}
+.audit-entry-header:hover{background:rgba(196,144,128,.04)}
+.audit-entry-date{font-size:12px;letter-spacing:1px;color:var(--rose);font-family:var(--font-b);font-weight:500}
+.audit-entry-style{font-size:11px;color:var(--grey);margin-top:.2rem}
+.audit-entry-actions{display:flex;gap:.5rem;align-items:center}
+.audit-entry-body{display:none;padding:0 1.25rem 1.25rem;border-top:1px solid var(--border)}
+.audit-entry-body.open{display:block}
+.audit-entry-section{margin-top:1rem}
+.audit-entry-section-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:.5rem;display:block}
+.audit-entry-text{font-family:var(--font-d);font-size:.95rem;color:var(--cream-dim);line-height:1.8}
+.audit-entry-text p{margin-bottom:.75rem}
+
+/* ── Access Gate ── */
+.hidden{display:none !important}
+.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem}
+.gate-card{max-width:420px;width:100%;text-align:center}
+.gate-card input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);color:var(--cream);font-family:var(--font-b);font-size:14px;padding:.75rem .9rem;outline:none;margin-bottom:.75rem;transition:border-color .2s}
+.gate-card input:focus{border-color:var(--rose)}
+.gate-err{font-size:12px;color:#E07070;margin-top:.5rem;min-height:1em}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .brand{font-size:1.5rem}
+  .tab-btn{font-size:9px;padding:7px 5px}
+  .tab-content{padding:1.75rem 1rem}
+  .btn-group{flex-direction:column}
+  .btn{justify-content:center}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════
+     MEMBER ACCESS GATE
+══════════════════════════════════════════ -->
+<div id="memberWall" class="gate-wrap">
+  <div class="gate-card">
+    <p class="brand-sup">The Attachment Code</p>
+    <h1 class="brand" style="font-size:1.6rem">The Relationship Audit</h1>
+    <div class="divider">
+      <span class="divider-line"></span>
+      <span class="divider-diamond"></span>
+      <span class="divider-line"></span>
+    </div>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8;margin-bottom:1.5rem">This tool is available to members of The Attachment Code. Enter the email address linked to your membership to continue.</p>
+    <input type="email" id="gateInput" placeholder="you@email.com" autocomplete="email">
+    <button class="btn btn-rose" id="gateBtn" style="width:100%;justify-content:center" onclick="checkGate()">Enter</button>
+    <p class="gate-err" id="gateErr"></p>
+    <p style="font-size:12px;color:var(--grey);margin-top:1.5rem">Not a member yet? <a href="https://skool.com/the-attachment-code" style="color:var(--rose)">Join The Attachment Code</a></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP CONTENT
+══════════════════════════════════════════ -->
+<div id="appContent" class="hidden">
+<div class="wrap">
+
+<!-- Hero -->
+<header class="hero">
+  <p class="brand-sup">The Attachment Code</p>
+  <h1 class="brand">The Relationship Audit</h1>
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-diamond"></span>
+    <span class="divider-line"></span>
+  </div>
+  <p class="tool-name">Recognise Your Patterns. Rewrite Your Story.</p>
+  <p class="hero-sub">This tool doesn't tell you what's wrong with your relationship. It shows you the dynamic you're living inside — and where you have real power to change it.</p>
+</header>
+
+<!-- Progress bar -->
+<div class="tab-progress">
+  <div class="tab-seg active" id="seg-0"></div>
+  <div class="tab-seg" id="seg-1"></div>
+  <div class="tab-seg" id="seg-2"></div>
+  <div class="tab-seg" id="seg-3"></div>
+  <div class="tab-seg" id="seg-4"></div>
+  <div class="tab-seg" id="seg-5"></div>
+</div>
+
+<!-- Tabs -->
+<div style="padding:0 1.5rem">
+  <div class="tabs-row" id="tabs-row">
+    <button class="tab-btn active" onclick="goTab(0,this)">Start Here</button>
+    <button class="tab-btn" onclick="goTab(1,this)">The Pattern</button>
+    <button class="tab-btn" onclick="goTab(2,this)">Your Role</button>
+    <button class="tab-btn" onclick="goTab(3,this)">Integration</button>
+    <button class="tab-btn" onclick="goTab(4,this)">Your Audit</button>
+    <button class="tab-btn" onclick="goTab(5,this)">Past Audits</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 0 — START HERE
+══════════════════════════════════════════ -->
+<div id="tab-0" class="tab-content active">
+
+  <div class="card">
+    <span class="section-label">Before You Begin</span>
+    <div class="reality-check">
+      <p>Before you answer anything, ask yourself — am I describing what actually happened, or what I felt about what happened? Both matter, but they are different things. This tool only works if you describe the behaviour, not the story you've built around it.</p>
+    </div>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8">There are no right answers here. Only honest ones. You don't need to know your attachment style, or theirs, to use this tool. You just need to be willing to look clearly at what keeps happening — and at your own part in it.</p>
+  </div>
+
+  <div class="card">
+    <span class="section-label">About You</span>
+    <div class="select-group">
+      <label for="userPronoun">I am</label>
+      <select id="userPronoun">
+        <option value="she/her" selected>Female</option>
+        <option value="he/him">Male</option>
+        <option value="they/them">Non-binary</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="section-label">About Them</span>
+    <div class="select-group">
+      <label for="partnerPronoun">They are</label>
+      <select id="partnerPronoun">
+        <option value="he/him" selected>Male</option>
+        <option value="she/her">Female</option>
+        <option value="they/them">Non-binary</option>
+      </select>
+    </div>
+
+    <div class="select-group">
+      <label for="relType">This relationship is</label>
+      <select id="relType">
+        <option value="romantic partner">A current romantic partner</option>
+        <option value="ex partner">An ex partner</option>
+        <option value="situationship">A situationship</option>
+        <option value="long distance partner">A long distance partner</option>
+        <option value="spouse">A spouse or life partner</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-rose" onclick="goTab(1,document.querySelectorAll('.tab-btn')[1])">Begin — The Pattern →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 1 — THE PATTERN (about your partner)
+══════════════════════════════════════════ -->
+<div id="tab-1" class="tab-content">
+
+  <div class="card">
+    <span class="section-label">The Pattern</span>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8">These questions are about <strong>them</strong>. Describe what actually happens — not your interpretation of why. The more specific and honest you are, the more accurate your audit will be. Speak or type your answers.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 01 of 05</span>
+    <p class="q-text">What tends to trigger them — either something to do with you or the relationship, or something going on outside of it?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q1" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q1',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 02 of 05</span>
+    <p class="q-text">When they're triggered, what do they actually do — both in the moment, and afterwards once things have settled?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q2" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q2',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 03 of 05</span>
+    <p class="q-text">How do they typically handle conflict?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q3" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q3',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 04 of 05</span>
+    <p class="q-text">When uncertainty rises between you, what do you sense is going on for them internally?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q4" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q4',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block" style="margin-bottom:1rem">
+    <span class="q-number">Question 05 of 05</span>
+    <p class="q-text">When things feel uncertain, what do you actually see them do?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q5" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q5',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn" onclick="goTab(0,document.querySelectorAll('.tab-btn')[0])">← Back</button>
+    <button class="btn btn-rose" onclick="markDone(1);goTab(2,document.querySelectorAll('.tab-btn')[2])">Continue — Your Role →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 2 — YOUR ROLE (about you)
+══════════════════════════════════════════ -->
+<div id="tab-2" class="tab-content">
+
+  <div class="card">
+    <span class="section-label">Your Role</span>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8">Now the lens turns to <strong>you</strong>. You can't change them. You can change what you do next. Describe your own responses as honestly as you described theirs.</p>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 06 of 12</span>
+    <p class="q-text">When they pull away or react, what do you typically do?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q6" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q6',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 07 of 12</span>
+    <p class="q-text">How do you handle conflict?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q7" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q7',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 08 of 12</span>
+    <p class="q-text">When this pattern is in motion — however it shows up for you — what happens in your body and mind?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q8" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q8',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 09 of 12</span>
+    <p class="q-text">What have you tried that hasn't worked?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q9" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q9',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 10 of 12</span>
+    <p class="q-text">What do you find yourself doing to keep the peace?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q10" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q10',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block">
+    <span class="q-number">Question 11 of 12</span>
+    <p class="q-text">How does the loop typically end?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q11" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q11',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="card q-block" style="margin-bottom:1rem">
+    <span class="q-number">Question 12 of 12</span>
+    <p class="q-text">What keeps repeating, no matter what changes?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="q12" placeholder="Speak or type your answer here…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('q12',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn" onclick="goTab(1,document.querySelectorAll('.tab-btn')[1])">← Back</button>
+    <button class="btn btn-rose" onclick="markDone(2);goTab(3,document.querySelectorAll('.tab-btn')[3])">Continue — Integration →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 3 — INTEGRATION
+══════════════════════════════════════════ -->
+<div id="tab-3" class="tab-content">
+
+  <div class="card">
+    <span class="section-label">Integration</span>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8">These questions bring the pattern and your role together. There are no right answers here. Only honest ones.</p>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 01</span>
+    <p class="q-text">Where does this relationship stand right now? Are you together and in regular contact? On a break? Has something specific just happened? Give as much detail as you can — this shapes everything that follows.</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-1" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-1',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 02</span>
+    <p class="q-text">After an argument or a period of distance, who usually reaches out first? What tends to happen after that?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-2" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-2',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 03</span>
+    <p class="q-text">When things are good between you, what are they like? What do you value most about your partner, and about this relationship? What keeps drawing you back?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-3" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-3',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 04</span>
+    <p class="q-text">What keeps happening between you, no matter what you try or how much things seem to change?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-4" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-4',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 05</span>
+    <p class="q-text">When did you first notice this pattern showing up — is this the first relationship where it's appeared, or have you seen it before?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-5" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-5',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 06</span>
+    <p class="q-text">What have you stopped doing or stopped saying — because you learned it wasn't safe or worth the cost?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-6" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-6',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 07</span>
+    <p class="q-text">What story do you tell yourself about them when you're activated? How different does that story look once you're calm?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-7" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-7',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 08</span>
+    <p class="q-text">What does staying in this dynamic cost you — in your energy, your sense of self, your life?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-8" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-8',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 09</span>
+    <p class="q-text">What does staying in this dynamic give you? What would you lose if it ended?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-9" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-9',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 10</span>
+    <p class="q-text">If your relationship was exactly the same as it is right now in five years' time — what would that mean for you?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-10" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-10',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 11 — Honesty Mirror</span>
+    <p class="q-text">Is there anything in how you've answered today that might reflect how you feel about the situation rather than what actually happened? Be honest with yourself here — this is just for you.</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-11" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-11',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 12</span>
+    <p class="q-text">In your own words — what keeps you in this dynamic? What makes it hard to walk away, or hard to fully stay?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-12" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-12',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 13</span>
+    <p class="q-text">What outcome do you actually want — for this relationship, and for yourself?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-13" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-13',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 14</span>
+    <p class="q-text">What would need to change for you to want to stay and build something here — and how much of that change would need to come from you, versus them?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-14" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-14',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 15</span>
+    <p class="q-text">Is this pattern specific to this relationship, or have you seen versions of it in others?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-15" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-15',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block">
+    <span class="q-number">Integration 16</span>
+    <p class="q-text">Did you take time to heal between your last significant relationship and this one? Do you think anything unresolved came with you into this one?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-16" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-16',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="card q-block" style="margin-bottom:1rem">
+    <span class="q-number">Integration 17</span>
+    <p class="q-text">Have you ever sought support for these patterns — therapy, coaching, inner work? If not, what's stopped you?</p>
+    <div class="voice-wrap">
+      <textarea class="voice-textarea" id="integ-17" placeholder="Speak or type your answer here — the more detail you give, the more accurate your audit will be…"></textarea>
+      <button class="mic-btn" onclick="toggleMic('integ-17',this)" title="Speak your answer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="btn" onclick="goTab(2,document.querySelectorAll('.tab-btn')[2])">← Back</button>
+    <button class="btn btn-rose" onclick="markDone(3);generateAudit()">Generate My Audit →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4 — YOUR AUDIT
+══════════════════════════════════════════ -->
+<div id="tab-4" class="tab-content">
+
+  <div id="audit-loading" class="ai-loading" style="display:none">
+    <p style="margin-bottom:1rem;font-family:var(--font-d);font-style:italic;color:var(--grey)">Reading your relationship…</p>
+    <span class="ai-loading-dot"></span>
+    <span class="ai-loading-dot"></span>
+    <span class="ai-loading-dot"></span>
+  </div>
+
+  <div id="audit-output" style="display:none">
+
+    <div class="card2" id="dynamic-section">
+      <span class="section-label">The Dynamic</span>
+      <div class="ai-output" id="dynamic-content"></div>
+    </div>
+
+    <div class="card" id="reflection-section" style="margin-top:1rem">
+      <span class="section-label">The Reflection</span>
+      <div class="ai-output" id="reflection-content"></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-rose" onclick="downloadAudit()">↓ Download</button>
+      <button class="btn" onclick="saveAudit()">Save</button>
+      <button class="btn btn-danger" onclick="deleteAudit()">Delete</button>
+      <span class="saved-msg" id="saved-msg">Saved</span>
+    </div>
+
+  </div>
+
+  <div id="audit-placeholder" class="card2" style="text-align:center;padding:3rem 1.5rem">
+    <p style="font-family:var(--font-d);font-size:1.1rem;font-style:italic;color:var(--grey)">Your audit will appear here once you complete the Integration section.</p>
+  </div>
+
+  <div class="btn-group" style="margin-top:1rem">
+    <button class="btn" onclick="goTab(3,document.querySelectorAll('.tab-btn')[3])">← Back to Integration</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     TAB 5 — PAST AUDITS
+══════════════════════════════════════════ -->
+<div id="tab-5" class="tab-content">
+
+  <div class="card">
+    <span class="section-label">Past Audits</span>
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.8">Every audit you save is stored here, dated and timestamped. Come back in weeks or months and see how things have changed — or haven't. Your history is saved on this device only.</p>
+  </div>
+
+  <div id="past-audits-empty" class="card2" style="text-align:center;padding:3rem 1.5rem">
+    <p style="font-family:var(--font-d);font-size:1.1rem;font-style:italic;color:var(--grey)">No saved audits yet. Complete an audit and hit Save to store it here.</p>
+  </div>
+
+  <div id="past-audits-list" style="display:none">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+      <button class="btn" onclick="downloadAllAudits()">↓ Download All</button>
+    </div>
+    <div id="past-audits-entries"></div>
+  </div>
+
+</div>
+</div><!-- /wrap -->
+</div><!-- /appContent -->
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+var WORKER_URL = 'https://wispy-dust-5244.djmisschief.workers.dev';
+
+// ── ACCESS GATE ───────────────────────────────────────────
+function tacVerifyEmail(email, onResult) {
+  fetch(WORKER_URL + '/check-access', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) { onResult(!!data.active); })
+  .catch(function() { onResult(false); });
+}
+
+function showApp() {
+  document.getElementById('appContent').classList.remove('hidden');
+  document.getElementById('memberWall').classList.add('hidden');
+}
+function showWall() {
+  document.getElementById('memberWall').classList.remove('hidden');
+  document.getElementById('appContent').classList.add('hidden');
+}
+
+function checkGate() {
+  var input = document.getElementById('gateInput');
+  var btn = document.getElementById('gateBtn');
+  var errEl = document.getElementById('gateErr');
+  var val = input.value.trim().toLowerCase();
+  if (!val || val.indexOf('@') === -1) {
+    errEl.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  errEl.textContent = '';
+  if (btn) btn.textContent = 'Checking...';
+  tacVerifyEmail(val, function(active) {
+    if (btn) btn.textContent = 'Enter';
+    if (active) {
+      try { localStorage.setItem('tac-email', val); } catch(e) {}
+      showApp();
+    } else {
+      errEl.textContent = "That email isn't showing as an active member. Please try again.";
+    }
+  });
+}
+document.getElementById('gateInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkGate(); });
+
+/* Check remembered email on load */
+(function() {
+  var stored = null;
+  try { stored = localStorage.getItem('tac-email'); } catch(e) {}
+  if (!stored) { return; }
+  tacVerifyEmail(stored, function(active) {
+    if (active) { showApp(); }
+  });
+})();
+
+// ── STATE ──────────────────────────────────────────────────
+var recognition = null;
+var listeningTarget = null;
+
+// ── TABS ───────────────────────────────────────────────────
+function goTab(idx, btn) {
+  var tabs = document.querySelectorAll('.tab-content');
+  var btns = document.querySelectorAll('.tab-btn');
+  var segs = document.querySelectorAll('.tab-seg');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  document.getElementById('tab-' + idx).classList.add('active');
+  if (btn) btn.classList.add('active');
+  for (var i = 0; i < segs.length; i++) {
+    segs[i].classList.remove('active', 'done');
+    if (i < idx) segs[i].classList.add('done');
+    if (i === idx) segs[i].classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+function markDone(idx) {
+  var btns = document.querySelectorAll('.tab-btn');
+  if (btns[idx]) btns[idx].classList.add('completed');
+}
+
+// ── VOICE ──────────────────────────────────────────────────
+function toggleMic(textareaId, btn) {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { btn.style.opacity = '0.3'; return; }
+  if (recognition && listeningTarget === textareaId) { recognition.stop(); return; }
+  if (recognition) recognition.stop();
+  recognition = new SR();
+  recognition.lang = 'en-GB';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  listeningTarget = textareaId;
+  var textarea = document.getElementById(textareaId);
+  var existing = textarea.value;
+  recognition.onstart = function() { btn.classList.add('listening'); };
+  recognition.onresult = function(e) {
+    var interim = '';
+    var final = existing;
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) { final += (final ? ' ' : '') + e.results[i][0].transcript; }
+      else { interim += e.results[i][0].transcript; }
+    }
+    textarea.value = final + (interim ? ' ' + interim : '');
+  };
+  recognition.onend = function() { btn.classList.remove('listening'); listeningTarget = null; };
+  recognition.start();
+}
+
+// ── COLLECT ────────────────────────────────────────────────
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function collectAllAnswers() {
+  return {
+    userPronoun: val('userPronoun'),
+    partnerPronoun: val('partnerPronoun'),
+    relType: val('relType'),
+    q1: val('q1'), q2: val('q2'), q3: val('q3'), q4: val('q4'), q5: val('q5'),
+    q6: val('q6'), q7: val('q7'), q8: val('q8'), q9: val('q9'), q10: val('q10'), q11: val('q11'), q12: val('q12'),
+    integ1: val('integ-1'), integ2: val('integ-2'), integ3: val('integ-3'), integ4: val('integ-4'),
+    integ5: val('integ-5'), integ6: val('integ-6'), integ7: val('integ-7'), integ8: val('integ-8'),
+    integ9: val('integ-9'), integ10: val('integ-10'), integ11: val('integ-11'), integ12: val('integ-12'),
+    integ13: val('integ-13'), integ14: val('integ-14'), integ15: val('integ-15'), integ16: val('integ-16'),
+    integ17: val('integ-17')
+  };
+}
+
+// ── AI PROMPT ──────────────────────────────────────────────
+function buildPrompt(a) {
+  var up = a.userPronoun.split('/')[0].toLowerCase();
+  var uh = up === 'he' ? 'he' : up === 'they' ? 'they' : 'she';
+  var uhs = up === 'he' ? 'his' : up === 'they' ? 'their' : 'her';
+  var pp = a.partnerPronoun.split('/')[0].toLowerCase();
+  var ph = pp === 'she' ? 'she' : pp === 'they' ? 'they' : 'he';
+  var phs = pp === 'she' ? 'her' : pp === 'they' ? 'their' : 'his';
+
+  return 'You are The Relationship Audit — a compassionate grounded tool within The Attachment Code.\n\n' +
+'BRAND VOICE: Warm, direct, grounded. Like a perceptive friend telling the truth without performing it. No therapy-speak, no jargon, no filler phrases. 6th grade reading level.\n\n' +
+'THE ATTACHMENT CODE PHILOSOPHY: This tool does not diagnose or sort people into attachment style boxes. Attachment styles are a doorway, not a destination. The point is not to name what the partner is or what the user is — it is to help the user see the pattern clearly, understand their own part in it, and recognise that they cannot change their partner but they can change themselves: their hidden beliefs, their mistaken beliefs, the responses that keep the pattern alive. Only name a specific attachment style if the evidence genuinely calls for it, and even then hold it lightly, as a possible lens rather than a verdict. Never reduce either person to a label.\n\n' +
+'CORE PRINCIPLES (use only the ones that genuinely fit the evidence — do not force all of them in):\n' +
+'- The Phantom Partner: unhealed wounds cause people to respond to a composite of past hurts projected onto their current partner. You cannot argue someone out of a wound they do not know they have.\n' +
+'- Your past becomes their present threat: people project their own relationship with their past onto their partner.\n' +
+'- The Activation Spiral: for some people, one state is the baseline operating system, a more intense state is the emergency protocol, and complete shutdown is the basement. Physical presence and safety interrupt the spiral more than words can once a certain threshold is crossed.\n' +
+'- The no-win communication trap: directness sometimes triggers explosions, so a partner learns to soften and hint instead — and then gets criticised for not being direct.\n' +
+'- Chaos calibration: some people need a certain amount of conflict energy to feel like the relationship is real, because that is what love looked like early in life.\n' +
+'- Withdrawal is not always avoidance — sometimes it is exhaustion. A pattern can keep running even in silence.\n' +
+'- Mismatched love languages: a partner may only be able to receive love through one narrow channel, so everything outside that channel goes unregistered.\n\n' +
+'CONTEXT:\nUSER: ' + uh + '/' + uhs + '\nPARTNER: ' + ph + '/' + phs + '\nRELATIONSHIP TYPE: ' + a.relType + '\n\n' +
+'THE PATTERN — ABOUT THEM:\n' +
+'What tends to trigger them: ' + (a.q1 || 'not answered') + '\n' +
+'What they do when triggered (in the moment and afterwards): ' + (a.q2 || 'not answered') + '\n' +
+'How they handle conflict: ' + (a.q3 || 'not answered') + '\n' +
+'What seems to go on for them internally under uncertainty: ' + (a.q4 || 'not answered') + '\n' +
+'What they visibly do under uncertainty: ' + (a.q5 || 'not answered') + '\n\n' +
+'YOUR ROLE — ABOUT THE USER:\n' +
+'What the user does when their partner pulls away or reacts: ' + (a.q6 || 'not answered') + '\n' +
+"The user's own conflict style: " + (a.q7 || 'not answered') + '\n' +
+'How the pattern feels in the body and mind when active: ' + (a.q8 || 'not answered') + '\n' +
+"What the user has tried that hasn't worked: " + (a.q9 || 'not answered') + '\n' +
+'What the user does to keep the peace: ' + (a.q10 || 'not answered') + '\n' +
+'How the loop typically ends: ' + (a.q11 || 'not answered') + '\n' +
+'What keeps repeating no matter what changes: ' + (a.q12 || 'not answered') + '\n\n' +
+'INTEGRATION:\n' +
+'1. Current state of the relationship: ' + (a.integ1 || 'not answered') + '\n' +
+'2. Who reaches out first after distance/conflict, and what happens: ' + (a.integ2 || 'not answered') + '\n' +
+'3. What is genuinely good, valued, and drawing them back: ' + (a.integ3 || 'not answered') + '\n' +
+'4. What keeps happening no matter what: ' + (a.integ4 || 'not answered') + '\n' +
+'5. When this pattern first appeared / whether it predates this relationship: ' + (a.integ5 || 'not answered') + '\n' +
+'6. What the user has stopped doing or saying: ' + (a.integ6 || 'not answered') + '\n' +
+'7. The story the user tells themselves when activated, vs when calm: ' + (a.integ7 || 'not answered') + '\n' +
+'8. What staying costs the user: ' + (a.integ8 || 'not answered') + '\n' +
+'9. What staying gives the user / what they would lose if it ended: ' + (a.integ9 || 'not answered') + '\n' +
+"10. What it would mean if the relationship stayed exactly the same for five more years: " + (a.integ10 || 'not answered') + '\n' +
+'11. Honesty Mirror (user reflecting on whether feeling coloured their own answers): ' + (a.integ11 || 'not answered') + '\n' +
+'12. What keeps the user in this dynamic, in their own words: ' + (a.integ12 || 'not answered') + '\n' +
+'13. The outcome the user actually wants: ' + (a.integ13 || 'not answered') + '\n' +
+'14. What would need to change, and how much would need to come from the user vs the partner: ' + (a.integ14 || 'not answered') + '\n' +
+'15. Whether this pattern shows up in other relationships too: ' + (a.integ15 || 'not answered') + '\n' +
+'16. Whether the user healed before this relationship / unresolved history: ' + (a.integ16 || 'not answered') + '\n' +
+'17. Whether the user has sought support for this pattern, and what has stopped them if not: ' + (a.integ17 || 'not answered') + '\n\n' +
+'CRITICAL INSTRUCTIONS FOR ACCURACY:\n' +
+"- Read every answer with precision. Do not invert what the user has written. If they say their partner believes something about himself, do not reframe it as the partner believing that about the user.\n" +
+'- Do not assume beyond what the answers explicitly state.\n' +
+'- Integration 1 (current relationship status) must inform the entire output — if the user is in no contact, do not write as if the relationship is functioning day to day.\n' +
+'- Integration 3 (what is good / valued) must be genuinely weighed alongside the difficult material. Do not let the output read as only a catalogue of problems.\n\n' +
+'CRITICAL INSTRUCTIONS FOR TONE:\n' +
+"- THE REFLECTION must be forensic, not prescriptive. Anchor every observation to the user's own answers. Use phrases like: your answers suggest, looking at the pattern you've described, based on what you've written. You are reading evidence back to the user, not delivering a diagnosis.\n" +
+'- Do not make definitive statements about psychology as if you already know. Arrive at insights through the evidence given.\n' +
+'- Avoid teacher-like statements. The reflection should feel like a mirror, not a lecture.\n' +
+'- The core message throughout: the user cannot change their partner. They can change their own responses, beliefs, and patterns. Make their real agency visible without minimising what they have been carrying.\n\n' +
+'Write exactly two sections with these headers:\n\n' +
+'THE DYNAMIC\n' +
+"[3-5 paragraphs. Name the pattern. Explain the dynamic without blaming either person. Depersonalise the partner's behaviour. Use core principles naturally, only where they genuinely fit. Warm grounded prose. No bullet points.]\n\n" +
+'THE REFLECTION\n' +
+"[3-5 paragraphs. Speak directly to the user. Anchor every observation to their own answers - use phrases like your answers suggest or based on what you've described. Acknowledge what they carry. Name where they have real agency. Practical, honest, forensic, not prescriptive. End with something that lands.]\n\n" +
+'No preamble, no closing remarks. Just the two sections.';
+}
+
+// ── GENERATE ───────────────────────────────────────────────
+function generateAudit() {
+  var answers = collectAllAnswers();
+  markDone(3);
+  goTab(4, document.querySelectorAll('.tab-btn')[4]);
+  document.getElementById('audit-loading').style.display = 'block';
+  document.getElementById('audit-output').style.display = 'none';
+  document.getElementById('audit-placeholder').style.display = 'none';
+
+  fetch(WORKER_URL + '/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-TAC-Email': (localStorage.getItem('tac-email') || '')
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      messages: [{ role: 'user', content: buildPrompt(answers) }]
+    })
+  })
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    var text = '';
+    if (data.content) {
+      for (var i = 0; i < data.content.length; i++) {
+        if (data.content[i].text) text += data.content[i].text;
+      }
+    }
+    var dynMatch = text.match(/THE DYNAMIC\s*([\s\S]*?)(?=THE REFLECTION|$)/i);
+    var refMatch = text.match(/THE REFLECTION\s*([\s\S]*?)$/i);
+    var dynRaw = dynMatch ? dynMatch[1].trim() : text;
+    var dynLines = dynRaw.split('\n');
+    var dynClean = [];
+    for (var di = 0; di < dynLines.length; di++) {
+      var dl = dynLines[di].trim();
+      if (dl === '---' || dl === '--' || dl === '##' || dl.indexOf('## ') === 0) continue;
+      dynClean.push(dynLines[di]);
+    }
+    var dynText = dynClean.join('\n').trim();
+    var refText = refMatch ? refMatch[1].trim() : '';
+    document.getElementById('dynamic-content').innerHTML = formatAIText(dynText);
+    document.getElementById('reflection-content').innerHTML = formatAIText(refText);
+    document.getElementById('audit-loading').style.display = 'none';
+    document.getElementById('audit-output').style.display = 'block';
+  })
+  .catch(function(err) {
+    document.getElementById('audit-loading').style.display = 'none';
+    document.getElementById('audit-placeholder').style.display = 'block';
+    document.getElementById('audit-placeholder').innerHTML = '<p style="color:var(--grey);font-family:var(--font-d);font-style:italic">Something went wrong. Please go back and try again.</p>';
+    console.error('Audit error:', err);
+  });
+}
+
+function formatAIText(text) {
+  if (!text) return '';
+  var paras = text.split(/\n\n+/);
+  var out = '';
+  for (var i = 0; i < paras.length; i++) {
+    if (paras[i].trim()) out += '<p>' + paras[i].trim() + '</p>';
+  }
+  return out;
+}
+
+// ── SAVE / DOWNLOAD / DELETE / PAST AUDITS ─────────────────
+function saveAudit() {
+  var dynamic = document.getElementById('dynamic-content').innerHTML;
+  var reflection = document.getElementById('reflection-content').innerHTML;
+  if (!dynamic) return;
+
+  var now = new Date();
+  var answers = collectAllAnswers();
+  var entry = {
+    id: now.getTime(),
+    date: now.toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}),
+    time: now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}),
+    answers: answers,
+    dynamic: dynamic,
+    reflection: reflection
+  };
+
+  var existing = [];
+  try {
+    var stored = localStorage.getItem('tac_ra_audits');
+    if (stored) existing = JSON.parse(stored);
+  } catch(e) {}
+
+  existing.unshift(entry);
+  try {
+    localStorage.setItem('tac_ra_audits', JSON.stringify(existing));
+  } catch(e) {}
+
+  var msg = document.getElementById('saved-msg');
+  if (msg) { msg.classList.add('show'); setTimeout(function() { msg.classList.remove('show'); }, 2500); }
+
+  renderPastAudits();
+}
+
+function renderPastAudits() {
+  var existing = [];
+  try {
+    var stored = localStorage.getItem('tac_ra_audits');
+    if (stored) existing = JSON.parse(stored);
+  } catch(e) {}
+
+  var emptyEl = document.getElementById('past-audits-empty');
+  var listEl = document.getElementById('past-audits-list');
+  var entriesEl = document.getElementById('past-audits-entries');
+
+  if (!existing.length) {
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (listEl) listEl.style.display = 'none';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (listEl) listEl.style.display = 'block';
+
+  if (!entriesEl) return;
+  entriesEl.innerHTML = '';
+
+  for (var i = 0; i < existing.length; i++) {
+    var e = existing[i];
+    var div = document.createElement('div');
+    div.className = 'audit-entry';
+    div.innerHTML =
+      '<div class="audit-entry-header" onclick="toggleAuditEntry(' + e.id + ')">' +
+        '<div>' +
+          '<div class="audit-entry-date">' + e.date + ' at ' + e.time + '</div>' +
+        '</div>' +
+        '<div class="audit-entry-actions">' +
+          '<button class="btn" style="padding:.35rem .75rem;font-size:10px" onclick="event.stopPropagation();downloadSingleAudit(' + e.id + ')">↓</button>' +
+          '<button class="btn btn-danger" style="padding:.35rem .75rem;font-size:10px" onclick="event.stopPropagation();deleteSingleAudit(' + e.id + ')">Delete</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="audit-entry-body" id="entry-body-' + e.id + '">' +
+        '<div class="audit-entry-section">' +
+          '<span class="audit-entry-section-label">The Dynamic</span>' +
+          '<div class="audit-entry-text">' + e.dynamic + '</div>' +
+        '</div>' +
+        '<div class="audit-entry-section">' +
+          '<span class="audit-entry-section-label">The Reflection</span>' +
+          '<div class="audit-entry-text">' + e.reflection + '</div>' +
+        '</div>' +
+      '</div>';
+    entriesEl.appendChild(div);
+  }
+}
+
+function toggleAuditEntry(id) {
+  var body = document.getElementById('entry-body-' + id);
+  if (body) body.classList.toggle('open');
+}
+
+function deleteSingleAudit(id) {
+  if (!confirm('Delete this audit? This cannot be undone.')) return;
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('tac_ra_audits') || '[]'); } catch(e) {}
+  existing = existing.filter(function(e) { return e.id !== id; });
+  try { localStorage.setItem('tac_ra_audits', JSON.stringify(existing)); } catch(e) {}
+  renderPastAudits();
+}
+
+function buildAnswerSummary(a) {
+  if (!a) return '';
+  var NL = '\n';
+  var line = '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+  var s = '';
+  s += line + NL + 'YOUR ANSWERS' + NL + line + NL + NL;
+  s += 'Relationship: ' + (a.relType || '') + NL + NL;
+  s += '--- THE PATTERN: ABOUT THEM ---' + NL + NL;
+  var patternQs = ['What tends to trigger them','What they do when triggered','How they handle conflict','What goes on internally under uncertainty','What you see them do under uncertainty'];
+  var patternVals = [a.q1,a.q2,a.q3,a.q4,a.q5];
+  for (var i = 0; i < patternQs.length; i++) { if (patternVals[i]) s += patternQs[i] + ':' + NL + patternVals[i] + NL + NL; }
+  s += '--- YOUR ROLE ---' + NL + NL;
+  var roleQs = ['What you do when they pull away or react','How you handle conflict','What happens in your body and mind','What you have tried that has not worked','What you do to keep the peace','How the loop typically ends','What keeps repeating'];
+  var roleVals = [a.q6,a.q7,a.q8,a.q9,a.q10,a.q11,a.q12];
+  for (var i = 0; i < roleQs.length; i++) { if (roleVals[i]) s += roleQs[i] + ':' + NL + roleVals[i] + NL + NL; }
+  s += '--- INTEGRATION ---' + NL + NL;
+  var integQs = ['Current state of the relationship','Who reaches out first, and what happens','What is good / what you value','What keeps happening no matter what','When this pattern first appeared','What you have stopped doing or saying','The story you tell yourself when activated vs calm','What staying costs you','What staying gives you','If it stayed exactly the same for five years','Honesty mirror','What keeps you in this dynamic','What outcome you want','What would need to change, and from whom','Whether this pattern shows up elsewhere','Whether you healed before this relationship','Whether you have sought support'];
+  var integVals = [a.integ1,a.integ2,a.integ3,a.integ4,a.integ5,a.integ6,a.integ7,a.integ8,a.integ9,a.integ10,a.integ11,a.integ12,a.integ13,a.integ14,a.integ15,a.integ16,a.integ17];
+  for (var i = 0; i < integQs.length; i++) {
+    if (integVals[i] && integVals[i].trim()) {
+      s += (i+1) + '. ' + integQs[i] + ':' + NL + integVals[i].trim() + NL + NL;
+    }
+  }
+  return s;
+}
+
+function downloadSingleAudit(id) {
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('tac_ra_audits') || '[]'); } catch(e) {}
+  var entry = null;
+  for (var i = 0; i < existing.length; i++) { if (existing[i].id === id) { entry = existing[i]; break; } }
+  if (!entry) return;
+  var NL = '\n';
+  var line = '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+  var dynText = entry.dynamic ? entry.dynamic.replace(/<[^>]+>/g, '').trim() : '';
+  var refText = entry.reflection ? entry.reflection.replace(/<[^>]+>/g, '').trim() : '';
+  var answerSection = entry.answers ? buildAnswerSummary(entry.answers) : '';
+  var parts = [
+    'THE ATTACHMENT CODE  -  THE RELATIONSHIP AUDIT', NL,
+    'Generated: ' + entry.date + ' at ' + entry.time, NL, NL,
+    answerSection,
+    line, NL, 'THE DYNAMIC', NL, line, NL, NL,
+    dynText, NL, NL,
+    line, NL, 'THE REFLECTION', NL, line, NL, NL,
+    refText, NL, NL,
+    line, NL,
+    'The Attachment Code  -  skool.com/the-attachment-code', NL,
+    'You cannot change a pattern you cannot see.', NL
+  ];
+  var ds = new Date(entry.id).toISOString().slice(0,10);
+  var ts = new Date(entry.id).toTimeString().slice(0,5).replace(':','-');
+  var blob = new Blob([parts.join('')], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'relationship-audit-' + ds + '-' + ts + '.txt';
+  a.style.display = 'none'; document.body.appendChild(a); a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+function downloadAllAudits() {
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('tac_ra_audits') || '[]'); } catch(e) {}
+  if (!existing.length) return;
+  var NL = '\n';
+  var line = '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+  var parts = ['THE ATTACHMENT CODE  -  THE RELATIONSHIP AUDIT  -  ALL SAVED AUDITS', NL, NL];
+  for (var i = 0; i < existing.length; i++) {
+    var e = existing[i];
+    var dynText = e.dynamic ? e.dynamic.replace(/<[^>]+>/g, '').trim() : '';
+    var refText = e.reflection ? e.reflection.replace(/<[^>]+>/g, '').trim() : '';
+    var answerSection = e.answers ? buildAnswerSummary(e.answers) : '';
+    parts.push(line, NL);
+    parts.push(e.date + ' at ' + e.time, NL);
+    parts.push(line, NL, NL);
+    parts.push(answerSection);
+    parts.push('THE DYNAMIC', NL, NL, dynText, NL, NL);
+    parts.push('THE REFLECTION', NL, NL, refText, NL, NL);
+  }
+  parts.push(line, NL, 'skool.com/the-attachment-code', NL);
+  var now = new Date();
+  var ds = now.toISOString().slice(0,10);
+  var blob = new Blob([parts.join('')], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'all-audits-' + ds + '.txt';
+  a.style.display = 'none'; document.body.appendChild(a); a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+function downloadAudit() {
+  var dynamic = document.getElementById('dynamic-content').innerText || '';
+  var reflection = document.getElementById('reflection-content').innerText || '';
+  var answers = collectAllAnswers();
+  var now = new Date();
+  var ds = now.toISOString().slice(0,10);
+  var ts = now.toTimeString().slice(0,5).replace(':','-');
+  var NL = '\n';
+  var line = '\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501';
+  var dateStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  var parts = [
+    'THE ATTACHMENT CODE  -  THE RELATIONSHIP AUDIT', NL,
+    'Generated: ' + dateStr + ' at ' + timeStr, NL, NL,
+    buildAnswerSummary(answers),
+    line, NL, 'THE DYNAMIC', NL, line, NL, NL,
+    dynamic, NL, NL,
+    line, NL, 'THE REFLECTION', NL, line, NL, NL,
+    reflection, NL, NL,
+    line, NL,
+    'The Attachment Code  -  skool.com/the-attachment-code', NL,
+    'You cannot change a pattern you cannot see.', NL
+  ];
+  var blob = new Blob([parts.join('')], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'relationship-audit-' + ds + '-' + ts + '.txt';
+  a.style.display = 'none'; document.body.appendChild(a); a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+}
+
+function deleteAudit() {
+  if (confirm('Delete your audit? This cannot be undone.')) {
+    document.getElementById('audit-output').style.display = 'none';
+    document.getElementById('audit-placeholder').style.display = 'block';
+    document.getElementById('audit-placeholder').innerHTML = '<p style="font-family:var(--font-d);font-size:1.1rem;font-style:italic;color:var(--grey)">Your audit has been deleted.</p>';
+  }
+}
+
+// Load past audits on startup
+renderPastAudits();
+
+</script>
+</body>
+</html>
